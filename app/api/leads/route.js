@@ -1,15 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-// Initialize Supabase inside the route to ensure fresh connection
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
 export async function POST(request) {
   try {
-    // Check if environment variables exist
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing Supabase environment variables');
       return NextResponse.json(
         { error: 'Server configuration error' },
         { status: 500 }
@@ -19,7 +16,6 @@ export async function POST(request) {
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
     const { name, email, phone, service, message } = await request.json();
     
-    // Validate required fields
     if (!name || !email || !phone) {
       return NextResponse.json(
         { error: 'Name, email, and phone are required' },
@@ -27,23 +23,23 @@ export async function POST(request) {
       );
     }
     
-    // Insert into Supabase
+    // Try to insert with explicit column names
     const { data, error } = await supabase
       .from('leads')
-      .insert([
-        {
-          name: name.trim(),
-          email: email.trim().toLowerCase(),
-          phone: phone.trim(),
-          source: 'website',
-          service_interest: service || null,
-          message: message || null,
-          contacted: false,
-        }
-      ]);
+      .insert({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        source: 'website',
+        service_interest: service || null,
+        message: message || null,
+        contacted: false,
+        created_at: new Date().toISOString()
+      })
+      .select();
     
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase insert error:', error);
       return NextResponse.json(
         { error: error.message },
         { status: 500 }
