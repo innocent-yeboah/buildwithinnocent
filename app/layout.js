@@ -33,8 +33,15 @@ export const metadata = {
     description: "I build websites, WhatsApp automation, and custom software for Ghanaian businesses. Free prototype first.",
     images: ["https://buildwithinnocent.com/og-image.jpg"],
   },
-  icons: {
-    icon: "/favicon.ico",
+    icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
