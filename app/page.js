@@ -1,8 +1,8 @@
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-     {/* Hero Section - Sales Message using Atomic Habits Framework */}
-<section className="min-h-screen flex items-center justify-center px-4 py-20 bg-linear-to-br from-white to-gray-50">
+    {/* Hero Section - Sales Message using Atomic Habits Framework */}
+<section className="min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-white to-gray-50">
   <div className="max-w-5xl mx-auto text-center">
     
     {/* Main Headline */}
@@ -25,9 +25,12 @@ export default function Home() {
     
     {/* CTA Buttons */}
     <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="#contact" className="bg-[#1E3A5F] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#152c47] transition transform hover:-translate-y-1 duration-300 shadow-lg">
+      <button 
+        onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+        className="bg-[#1E3A5F] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#152c47] transition transform hover:-translate-y-1 duration-300 shadow-lg cursor-pointer"
+      >
         📞 Book a Free Consultation
-      </a>
+      </button>
       <a href="#work" className="border-2 border-[#1E3A5F] text-[#1E3A5F] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#1E3A5F] hover:text-white transition transform hover:-translate-y-1 duration-300">
         👀 See My Work
       </a>
@@ -42,7 +45,7 @@ export default function Home() {
       </p>
     </div>
     
-    {/* Social Proof - Clementina's Endorsement (Tiny, Trust-building) */}
+    {/* Social Proof */}
     <div className="mt-8 max-w-md mx-auto">
       <p className="text-gray-400 text-sm italic">
         "Inspiring story. Let's celebrate how far you've come." 
@@ -76,59 +79,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Lead Capture Section */}
+     {/* Lead Capture Section */}
 <section className="py-16 px-4 bg-white" id="contact-form">
   <div className="max-w-2xl mx-auto text-center">
     <h2 className="text-3xl font-bold text-[#1E3A5F] mb-4">
       Let's Build Something Great Together
     </h2>
-    <p className="text-gray-600 mb-8">
+    <p className="text-gray-700 text-lg mb-8">
       Tell me about your business needs. I will respond within 24 hours.
     </p>
     
     <form id="lead-form" className="space-y-4 text-left">
       <div>
-        <label className="block text-gray-700 font-medium mb-2">Your Name *</label>
+        <label className="block text-gray-800 font-semibold mb-2">Your Name *</label>
         <input 
           type="text" 
           id="lead-name" 
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#1E3A5F]"
+          className="w-full px-4 py-3 border border-gray-400 rounded-lg focus:outline-none focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/30 text-gray-900 bg-white"
           placeholder="John Doe"
         />
       </div>
       
       <div>
-        <label className="block text-gray-700 font-medium mb-2">Email Address *</label>
+        <label className="block text-gray-800 font-semibold mb-2">Email Address *</label>
         <input 
           type="email" 
           id="lead-email" 
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#1E3A5F]"
+          className="w-full px-4 py-3 border border-gray-400 rounded-lg focus:outline-none focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/30 text-gray-900 bg-white"
           placeholder="john@example.com"
         />
       </div>
       
       <div>
-        <label className="block text-gray-700 font-medium mb-2">WhatsApp Number *</label>
+        <label className="block text-gray-800 font-semibold mb-2">WhatsApp Number *</label>
         <input 
           type="tel" 
           id="lead-phone" 
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#1E3A5F]"
+          className="w-full px-4 py-3 border border-gray-400 rounded-lg focus:outline-none focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/30 text-gray-900 bg-white"
           placeholder="+233 XX XXX XXXX"
         />
       </div>
       
       <div>
-        <label className="block text-gray-700 font-medium mb-2">What do you need help with?</label>
+        <label className="block text-gray-800 font-semibold mb-2">What do you need help with?</label>
         <select 
           id="lead-service"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#1E3A5F]"
+          className="w-full px-4 py-3 border border-gray-400 rounded-lg focus:outline-none focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/30 text-gray-900 bg-white"
         >
           <option value="">Select a service</option>
           <option value="website">Modern Website</option>
-          <option value="whatsapp">WhatsApp Automation</option>
+          <option value="whatsapp">WhatsApp AI Automation</option>
           <option value="dashboard">Business Dashboard</option>
           <option value="custom">Custom Software</option>
           <option value="other">Other / I'm not sure</option>
@@ -136,24 +139,24 @@ export default function Home() {
       </div>
       
       <div>
-        <label className="block text-gray-700 font-medium mb-2">Tell me more about your business</label>
+        <label className="block text-gray-800 font-semibold mb-2">Tell me more about your business</label>
         <textarea 
           id="lead-message" 
           rows="4"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#1E3A5F]"
+          className="w-full px-4 py-3 border border-gray-400 rounded-lg focus:outline-none focus:border-[#1E3A5F] focus:ring-2 focus:ring-[#1E3A5F]/30 text-gray-900 bg-white"
           placeholder="Tell me about your business, challenges, and goals..."
         ></textarea>
       </div>
       
       <button 
         type="submit"
-        className="w-full bg-[#1E3A5F] text-white py-3 rounded-lg font-semibold hover:bg-[#152c47] transition"
+        className="w-full bg-[#1E3A5F] text-white py-3 rounded-lg font-semibold hover:bg-[#152c47] transition text-lg"
       >
         Send Message →
       </button>
     </form>
     
-    <p className="text-gray-400 text-sm mt-6">
+    <p className="text-gray-500 text-sm mt-6">
       I will respond within 24 hours. No spam. No pressure.
     </p>
   </div>

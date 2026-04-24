@@ -1,8 +1,22 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+
+// Initialize Supabase inside the route to ensure fresh connection
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function POST(request) {
   try {
+    // Check if environment variables exist
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing Supabase environment variables');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
     const { name, email, phone, service, message } = await request.json();
     
     // Validate required fields
@@ -18,22 +32,25 @@ export async function POST(request) {
       .from('leads')
       .insert([
         {
-          name,
-          email,
-          phone,
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          phone: phone.trim(),
           source: 'website',
-          service_interest: service,
-          message: message || '',
+          service_interest: service || null,
+          message: message || null,
           contacted: false,
         }
       ]);
     
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
     
-    // Optional: Send WhatsApp notification to you
-    await fetch(`https://api.whatsapp.com/send?phone=233530710628&text=New%20lead%3A%20${name}%20-${email}`);
-    
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, data });
   } catch (error) {
     console.error('Error saving lead:', error);
     return NextResponse.json(
