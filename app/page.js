@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
      {/* Hero Section - Sales Message using Atomic Habits Framework */}
-<section className="min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-white to-gray-50">
+<section className="min-h-screen flex items-center justify-center px-4 py-20 bg-linear-to-br from-white to-gray-50">
   <div className="max-w-5xl mx-auto text-center">
     
     {/* Main Headline */}
