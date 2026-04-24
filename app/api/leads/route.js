@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+﻿import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
@@ -7,8 +7,9 @@ export async function POST(request) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Missing Supabase environment variables');
       return NextResponse.json(
-        { error: 'Server configuration error' },
+        { error: 'Server configuration error. Please contact support.' },
         { status: 500 }
       );
     }
@@ -23,7 +24,6 @@ export async function POST(request) {
       );
     }
     
-    // Try to insert with explicit column names
     const { data, error } = await supabase
       .from('leads')
       .insert({
@@ -35,8 +35,7 @@ export async function POST(request) {
         message: message || null,
         contacted: false,
         created_at: new Date().toISOString()
-      })
-      .select();
+      });
     
     if (error) {
       console.error('Supabase insert error:', error);
