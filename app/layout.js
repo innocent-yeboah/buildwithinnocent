@@ -1,34 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
-const inter = Inter({subsets: ["latin"]});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export default function RootLayout({ children }) {
-  return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
-    </html>
-  );
-}
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Build With Innocent | Custom Software for Ghanaian Businesses",
   description: "Websites, WhatsApp automation, and custom software for Ghanaian businesses. Free prototype. No monthly USD fees. Based in Accra.",
-  keywords: "web developer Ghana, Accra web design, WhatsApp automation, custom software Ghana, business website",
+  keywords: "web developer Ghana, Accra web design, WhatsApp automation, custom software Ghana, business website, full stack developer Ghana",
   authors: [{ name: "Innocent Golden" }],
   creator: "Innocent Golden",
   publisher: "Build With Innocent",
@@ -55,4 +33,15 @@ export const metadata = {
     description: "I build websites, WhatsApp automation, and custom software for Ghanaian businesses. Free prototype first.",
     images: ["https://buildwithinnocent.com/og-image.jpg"],
   },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
+  );
+}
