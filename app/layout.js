@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Build With Innocent | Custom Software for Ghanaian Businesses",
   description: "Websites, WhatsApp automation, and custom software for Ghanaian businesses. Free prototype. No monthly USD fees. Based in Accra.",
-  keywords: "web developer Ghana, Accra web design, WhatsApp automation, custom software Ghana, business website, full stack developer Ghana",
+  keywords: "web developer Ghana, Accra web design, WhatsApp automation, custom software Ghana, business website",
   authors: [{ name: "Innocent Golden" }],
   creator: "Innocent Golden",
   publisher: "Build With Innocent",
@@ -33,7 +33,7 @@ export const metadata = {
     description: "I build websites, WhatsApp automation, and custom software for Ghanaian businesses. Free prototype first.",
     images: ["https://buildwithinnocent.com/og-image.jpg"],
   },
-    icons: {
+  icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
