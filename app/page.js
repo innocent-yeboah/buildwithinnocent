@@ -1,28 +1,57 @@
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="py-20 px-4 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold text-[#1E3A5F]">
-          Build With Innocent
-        </h1>
-        <p className="text-xl md:text-2xl text-[#2E7D32] mt-4 font-semibold">
-          I build custom software for Ghanaian businesses
-        </p>
-        <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-lg">
-          From landing pages to WhatsApp automation — I build live products, not tutorials.
-          <br />
-          4 products shipped in 6 months.
-        </p>
-        <div className="mt-8 space-x-4">
-          <a href="#work" className="bg-[#1E3A5F] text-white px-6 py-3 rounded-lg hover:bg-[#152c47] transition">
-            View My Work
-          </a>
-          <a href="https://wa.me/233530710628" className="bg-[#2E7D32] text-white px-6 py-3 rounded-lg hover:bg-[#1b5e20] transition">
-            WhatsApp Me
-          </a>
-        </div>
-      </section>
+     {/* Hero Section - Sales Message using Atomic Habits Framework */}
+<section className="min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-white to-gray-50">
+  <div className="max-w-5xl mx-auto text-center">
+    
+    {/* Main Headline */}
+    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#1E3A5F] leading-tight">
+      Stop Fighting Your Business.
+      <br />
+      <span className="text-[#2E7D32]">Start Running a System.</span>
+    </h1>
+    
+    {/* Subheadline - Problem Agitation */}
+    <p className="text-xl md:text-2xl text-gray-600 mt-6 max-w-3xl mx-auto">
+      Most Ghanaian businesses are losing money, time, and customers — not because their products are bad, but because their <span className="font-semibold text-[#1E3A5F]">systems are broken</span>.
+    </p>
+    
+    {/* Solution Statement */}
+    <p className="text-lg md:text-xl text-gray-700 mt-4 max-w-2xl mx-auto">
+      I build custom software that turns chaos into clarity. 
+      <span className="font-bold text-[#2E7D32]"> Free prototype. No monthly USD fees. You own everything.</span>
+    </p>
+    
+    {/* CTA Buttons */}
+    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#contact" className="bg-[#1E3A5F] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#152c47] transition transform hover:-translate-y-1 duration-300 shadow-lg">
+        📞 Book a Free Consultation
+      </a>
+      <a href="#work" className="border-2 border-[#1E3A5F] text-[#1E3A5F] px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#1E3A5F] hover:text-white transition transform hover:-translate-y-1 duration-300">
+        👀 See My Work
+      </a>
+    </div>
+    
+    {/* Atomic Habits Badge - Visual Trust Signal */}
+    <div className="mt-12 inline-block bg-white rounded-full px-6 py-3 shadow-md border border-gray-100">
+      <p className="text-gray-500 text-sm flex items-center gap-2">
+        <span className="text-[#2E7D32] text-xl">✓</span> Built on The Four Laws of Atomic Habits 
+        <span className="text-gray-300 mx-1">|</span> 
+        <span className="text-[#2E7D32] text-xl">✓</span> 4 live products in 6 months
+      </p>
+    </div>
+    
+    {/* Social Proof - Clementina's Endorsement (Tiny, Trust-building) */}
+    <div className="mt-8 max-w-md mx-auto">
+      <p className="text-gray-400 text-sm italic">
+        "Inspiring story. Let's celebrate how far you've come." 
+        <span className="block font-semibold text-gray-500">— Clementina Aina, Founder of 6Cs (Top 0.01% EdTech)</span>
+      </p>
+    </div>
+    
+  </div>
+</section>
 
       {/* Services Section */}
       <section className="py-16 px-4 bg-gray-50">
