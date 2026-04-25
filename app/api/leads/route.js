@@ -1,20 +1,8 @@
-﻿import { createClient } from '@supabase/supabase-js';
+﻿import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.error('Missing Supabase environment variables');
-      return NextResponse.json(
-        { error: 'Server configuration error. Please contact support.' },
-        { status: 500 }
-      );
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
     const { name, email, phone, service, message } = await request.json();
     
     if (!name || !email || !phone) {
@@ -35,7 +23,8 @@ export async function POST(request) {
         message: message || null,
         contacted: false,
         created_at: new Date().toISOString()
-      });
+      })
+      .select();
     
     if (error) {
       console.error('Supabase insert error:', error);
