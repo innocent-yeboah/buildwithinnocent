@@ -83,9 +83,6 @@ export default function MaintenanceBanner() {
         >
           {MAINTENANCE_COPY.body}
         </p>
-        <p className="mt-3 text-center text-sm font-semibold uppercase tracking-[0.18em] text-gold">
-          Back {MAINTENANCE_COPY.returnLabel}
-        </p>
 
         <div
           className="mt-8 grid grid-cols-4 gap-2 sm:gap-4"
@@ -121,12 +118,12 @@ export default function MaintenanceBanner() {
 
       <div className="maintenance-tape maintenance-tape-bottom" aria-hidden="true">
         <span>
-          HARD HATS ON — GEARS TURNING — BACK TUESDAY 15 SEPTEMBER 2026 — HARD
-          HATS ON — GEARS TURNING — BACK TUESDAY 15 SEPTEMBER 2026 —
+          HARD HATS ON — GEARS TURNING — BACK SOON — HARD HATS ON — GEARS
+          TURNING — BACK SOON —
         </span>
         <span>
-          HARD HATS ON — GEARS TURNING — BACK TUESDAY 15 SEPTEMBER 2026 — HARD
-          HATS ON — GEARS TURNING — BACK TUESDAY 15 SEPTEMBER 2026 —
+          HARD HATS ON — GEARS TURNING — BACK SOON — HARD HATS ON — GEARS
+          TURNING — BACK SOON —
         </span>
       </div>
     </div>
