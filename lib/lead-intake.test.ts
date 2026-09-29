@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { intakeLead } from "@/lib/lead-intake";
 
-const contact = { whatsapp: "https://wa.me/233200000000", email: "hello@buildwithinnocent.com" };
+const contact = { whatsapp: "https://wa.me/233200000000", email: "hello@offervaluewithinnocent.com" };
 
 describe("intakeLead", () => {
   it("saves first and does not use the failure notifier when the database works", async () => {

@@ -99,7 +99,8 @@ describe("getBotReply", () => {
     expect(whatsapp.confirmsOnCall).toBeUndefined();
 
     const email = getBotReply("What is your email?");
-    expect(email.text).toContain(site.email);
+    expect(site.email).toBe("hello@offervaluewithinnocent.com");
+    expect(email.text).toContain("hello@offervaluewithinnocent.com");
     expect(email.text).toContain(responseTimePhrase);
   });
 

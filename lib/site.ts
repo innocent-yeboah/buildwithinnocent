@@ -72,9 +72,10 @@ const whatsappDigits = readWhatsAppDigits();
 
 function readContactEmail(): string | null {
   const fromEnv = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() ?? "";
-  // hello@buildwithinnocent.com is the brand address (MX still needs the owner).
+  // hello@offervaluewithinnocent.com is the public address.
   // It is not an example placeholder. An env override that looks fake is ignored.
-  const value = fromEnv || "hello@buildwithinnocent.com";
+  // Receiving mail still needs MX on offervaluewithinnocent.com.
+  const value = fromEnv || "hello@offervaluewithinnocent.com";
   const looksFake = /example\.(com|org|net)|placeholder|your-email|changeme|email@email/i.test(
     value,
   );

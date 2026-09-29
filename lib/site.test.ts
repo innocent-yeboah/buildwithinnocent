@@ -18,6 +18,11 @@ describe("WhatsApp number", () => {
     expect(resolveWhatsAppDigits("+44 7700 900123")).toBe("447700900123");
   });
 
+  it("uses the public contact email, not the website domain", () => {
+    expect(site.email).toBe("hello@offervaluewithinnocent.com");
+    expect(site.url).toBe("https://buildwithinnocent.com");
+  });
+
   it("shows +233 53 071 0628 and links to wa.me/233530710628", () => {
     expect(formatWhatsAppDisplay("233530710628")).toBe("+233 53 071 0628");
     expect(site.phoneDisplay).toBe("+233 53 071 0628");
