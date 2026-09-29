@@ -26,7 +26,7 @@ const ThreeCanvas = dynamic(() => import("@/components/ThreeCanvas"), {
  */
 export default function ExperiencePage() {
   return (
-    <section className="relative h-[calc(100svh-4.5rem)] min-h-[28rem] w-full overflow-hidden bg-primary-900">
+    <section className="relative h-[calc(100svh-9rem)] min-h-[28rem] w-full overflow-hidden bg-primary-900">
       <ThreeCanvas className="absolute inset-0" />
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-primary-900/80 to-transparent px-4 pb-16 pt-8">

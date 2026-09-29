@@ -76,15 +76,19 @@ export default function ChatWidget() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-controls="chat-panel"
-        aria-label={open ? "Close chat" : "Chat with us"}
-        className="fixed bottom-5 right-5 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-growth text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:bottom-6 sm:right-6"
+        aria-label={open ? "Close chat" : "Ask the assistant"}
+        title={open ? "Close chat" : "Ask the assistant"}
+        className="ml-auto inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
             <path d="M6 6l12 12M18 6L6 18" />
           </svg>
         ) : (
-          <ChatIcon className="h-7 w-7" />
+          <>
+            <ChatIcon className="h-[22px] w-[22px]" />
+            Ask
+          </>
         )}
       </button>
 
@@ -94,7 +98,7 @@ export default function ChatWidget() {
           id="chat-panel"
           role="dialog"
           aria-label="Chat with Build With Innocent"
-          className="fixed bottom-[5.5rem] right-4 z-[60] flex h-[70vh] max-h-[34rem] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-card-hover sm:bottom-24 sm:right-6"
+          className="fixed bottom-[4.75rem] right-4 z-[70] flex h-[min(70vh,34rem)] max-h-[calc(100dvh-6.5rem)] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-card-hover sm:right-6"
         >
           {/* Header */}
           <div className="flex items-center gap-3 bg-primary px-5 py-4">
