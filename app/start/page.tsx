@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import LeadForm from "@/components/LeadForm";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import { responseTimePhrase, site } from "@/lib/site";
@@ -89,8 +90,13 @@ export default function StartPage() {
             className="animate-fade-up mt-5 text-lg text-primary-100"
             style={{ animationDelay: "150ms" }}
           >
-            We will send a tailored proposal {responseTimePhrase} — what we
-            would build, how long it takes, and exactly what it costs.
+            A short note is enough for a proposal {responseTimePhrase} — what
+            would be built, how long it takes, and what it costs. For a
+            proper conversation first,{" "}
+            <Link href="/strategy-call" className="font-semibold text-white underline-offset-4 hover:underline">
+              book a strategy call
+            </Link>
+            .
           </p>
           {site.whatsappUrl && (
             <p className="animate-fade-up mt-6" style={{ animationDelay: "200ms" }}>

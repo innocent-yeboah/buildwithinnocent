@@ -68,6 +68,39 @@ describe("POST /api/leads", () => {
     expect(sendWhatsAppNotification).not.toHaveBeenCalled();
   });
 
+  it("keeps a strategy-call budget in the enquiry sent to the owner", async () => {
+    const response = await POST(
+      post(
+        {
+          ...validBody,
+          source: "strategy-call",
+          budgetRange: "GHS 15,000-50,000",
+          timeline: "In 1-3 months",
+          projectDetails: "Two branches.",
+        },
+        "203.0.113.13",
+      ),
+    );
+    expect(response.status).toBe(503);
+    expect(sendOwnerLeadAlert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        projectDetails: expect.stringContaining("Budget range: GHS 15,000-50,000"),
+      }),
+      expect.any(String),
+    );
+    const lead = vi.mocked(sendOwnerLeadAlert).mock.calls[0][0];
+    expect(lead.projectDetails).toContain("Timeline: In 1-3 months");
+    expect(lead.projectDetails).toContain("Two branches.");
+  });
+
+  it("rejects a budget that is not one of the published ranges", async () => {
+    const response = await POST(
+      post({ ...validBody, source: "strategy-call", budgetRange: "a million" }, "203.0.113.14"),
+    );
+    expect(response.status).toBe(422);
+    expect(sendOwnerLeadAlert).not.toHaveBeenCalled();
+  });
+
   it("rejects a lead that is missing a phone number", async () => {
     const response = await POST(post({ ...validBody, phone: "" }, "203.0.113.12"));
     expect(response.status).toBe(422);

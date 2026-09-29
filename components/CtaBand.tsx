@@ -6,6 +6,7 @@ type CtaBandProps = {
   title?: string;
   subtitle?: string;
   buttonLabel?: string;
+  href?: string;
 };
 
 /**
@@ -13,9 +14,10 @@ type CtaBandProps = {
  * One clear next step: tell us about your project.
  */
 export default function CtaBand({
-  title = "Ready to Grow While You Sleep?",
-  subtitle = `Tell us about your project. We will send a tailored proposal ${responseTimePhrase}.`,
-  buttonLabel = "Tell Us About Your Project",
+  title = "If the business is ready, book the call.",
+  subtitle = `Tell Innocent about the customers you already have. He replies ${responseTimePhrase}.`,
+  buttonLabel = "Book a strategy call",
+  href = "/strategy-call",
 }: CtaBandProps) {
   return (
     <section
@@ -42,9 +44,14 @@ export default function CtaBand({
             {subtitle}
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/start" className="btn-primary text-lg">
+            <Link href={href} className="btn-primary text-lg">
               {buttonLabel} <span aria-hidden="true">&rarr;</span>
             </Link>
+            {href !== "/start" && (
+              <Link href="/start" className="btn-ghost-light">
+                Send a short note
+              </Link>
+            )}
           </div>
           <p className="mt-6 text-sm font-medium text-gold">
             10+ qualified leads in 30 days, or we work for free until you get them.

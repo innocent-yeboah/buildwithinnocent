@@ -4,6 +4,7 @@ import { getSupabaseAdmin } from "@/lib/supabase";
 import { withBackoff } from "@/lib/retry";
 import { screenPublicWrite } from "@/lib/abuse";
 import { normalizeLead, validateLead, type LeadInput } from "@/lib/leads";
+import { composeQualification } from "@/lib/engagement";
 import { intakeLead } from "@/lib/lead-intake";
 import { publicFallback, responseTimePhrase, site } from "@/lib/site";
 import {
@@ -91,12 +92,26 @@ export async function POST(request: NextRequest) {
       : null;
 
   const errors = validateLead(lead);
+  const qualification = composeQualification({
+    budgetRange: typeof body.budgetRange === "string" ? body.budgetRange : "",
+    timeline: typeof body.timeline === "string" ? body.timeline : "",
+    note: lead.projectDetails,
+    strategyCall: body.source === "strategy-call",
+  });
+  if (qualification) {
+    Object.assign(errors, qualification.errors);
+  }
   if (Object.values(errors).some(Boolean)) {
     return NextResponse.json(
       { message: "A few details need another look before we can send this.", errors },
       { status: 422 },
     );
   }
+  if (qualification) {
+    lead.projectDetails = qualification.projectDetails;
+  }
+
+  const source = body.source === "strategy-call" ? "strategy-call" : "website";
 
   const supabase = getSupabaseAdmin();
   const fallback = publicFallback();
@@ -112,7 +127,7 @@ export async function POST(request: NextRequest) {
               phone: lead.phone,
               industry: lead.industry,
               project_details: lead.projectDetails,
-              source: "website",
+              source,
               status: "new",
               referral_code: referralCode,
             });

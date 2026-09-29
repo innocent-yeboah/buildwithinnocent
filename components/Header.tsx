@@ -74,8 +74,8 @@ export default function Header() {
               WhatsApp
             </a>
           )}
-          <Link href="/start" className="btn-primary ml-3 !px-5 !py-2.5 !text-sm">
-            Start Your System
+          <Link href="/strategy-call" className="btn-primary ml-3 !px-5 !py-2.5 !text-sm">
+            Book a strategy call
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </nav>
@@ -142,8 +142,8 @@ export default function Header() {
               </li>
             )}
             <li className="mt-3">
-              <Link href="/start" className="btn-primary w-full">
-                Start Your System <span aria-hidden="true">&rarr;</span>
+              <Link href="/strategy-call" className="btn-primary w-full">
+                Book a strategy call <span aria-hidden="true">&rarr;</span>
               </Link>
             </li>
           </ul>

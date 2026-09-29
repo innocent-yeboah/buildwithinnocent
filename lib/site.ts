@@ -93,10 +93,10 @@ export const responseTimePhrase = "within 1-2 working days";
 
 export const site = {
   name: "Build With Innocent",
-  tagline: "Digital Business Systems for African Enterprises",
-  headline: "Your business should work while you sleep.",
+  tagline: "Digital systems for established African businesses",
+  headline: "Innocent builds the system your business runs on.",
   subheadline:
-    "A digital system that brings you customers, bookings, and payments — automatically. No more late nights. No more manual work. Just results.",
+    "For owners who already have customers and want bookings, payments, and follow-up handled without living in WhatsApp.",
   promise:
     "10+ qualified leads in 30 days, or we work for free until you get them.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://buildwithinnocent.com",
@@ -106,7 +106,17 @@ export const site = {
   phoneDisplay: whatsappDigits ? formatWhatsAppDisplay(whatsappDigits) : null,
   /** Click-to-chat URL with a prefilled message, or null when unset. */
   whatsappUrl: whatsappDigits ? whatsappChatUrl(whatsappDigits) : null,
-  founder: "Innocent Golden",
+  /**
+   * Public name only. Earlier pages used "Innocent Golden"; the owner of
+   * this project is Innocent Yeboah. The surname is his decision to confirm.
+   * The site does not guess.
+   */
+  founder: "Innocent",
+  /**
+   * Set to "/images/founder.jpg" after a real photograph is placed in
+   * public/images. Left unset so visitors never see a stand-in face.
+   */
+  founderPhoto: null as string | null,
   locale: "en_GH",
   offer: {
     /** Full partnership investment. */
@@ -139,13 +149,19 @@ export function publicFallback(): { whatsapp?: string; email?: string } | undefi
 }
 
 export const navLinks = [
-  { href: "/what-we-build", label: "What We Build" },
-  { href: "/how-it-works", label: "How It Works" },
-  { href: "/industries", label: "Industries" },
-  { href: "/case-studies", label: "Case Studies" },
+  { href: "/what-we-build", label: "The System" },
+  { href: "/strategy-call", label: "Working Together" },
+  { href: "/case-studies", label: "Proof" },
   { href: "/calculator", label: "Pricing" },
-  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
+] as const;
+
+/** Pages that stay easy to find without crowding the header. */
+export const moreLinks = [
+  { href: "/how-it-works", label: "The 5-week process" },
+  { href: "/industries", label: "Industries" },
+  { href: "/blog", label: "Writing" },
+  { href: "/start", label: "Short project note" },
 ] as const;
 
 /** Free tools and secondary destinations, surfaced in the footer. */

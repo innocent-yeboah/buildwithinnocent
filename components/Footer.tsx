@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { navLinks, toolLinks, site } from "@/lib/site";
+import { moreLinks, navLinks, toolLinks, site } from "@/lib/site";
 
 /**
  * Site footer: brand recap, navigation, contact, and the guarantee —
@@ -17,8 +17,8 @@ export default function Footer() {
             {site.tagline}
           </p>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-100">
-            We build digital business systems that bring you customers while
-            you sleep. One partnership. Everything handled.
+            Innocent builds digital systems with owners of established
+            African businesses. One partnership. The price is published.
           </p>
         </div>
 
@@ -37,14 +37,16 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/start"
-                className="text-sm font-semibold text-gold hover:text-gold-300"
-              >
-                Start Your System &rarr;
-              </Link>
-            </li>
+            {moreLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-sm text-primary-100 transition-colors hover:text-gold"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -138,10 +140,10 @@ export default function Footer() {
             10+ leads in 30 days or we work for free.
           </p>
           <Link
-            href="/start"
+            href="/strategy-call"
             className="mt-4 inline-block text-sm font-semibold text-gold hover:text-gold-300"
           >
-            Tell us about your project &rarr;
+            Book a strategy call &rarr;
           </Link>
         </div>
       </div>

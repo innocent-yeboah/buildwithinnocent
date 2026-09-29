@@ -99,15 +99,15 @@ const rules: Rule[] = [
   {
     keywords: /\b(who|about|innocent|founder|team|trust)\b/i,
     reply: {
-      text: "Build With Innocent is led by Innocent Golden — from Uber driver to full-stack developer to building digital business systems for African enterprises. And this website runs on the exact system we sell.",
+      text: "Innocent builds the system with you — the call, the scope, and the build. He learned the craft between Uber shifts and still does the work himself. This website is the piece you can inspect.",
       link: { href: "/about", label: "Read the story" },
     },
   },
   {
     keywords: /\b(start|begin|proposal|interested|hire)\b|\bsign ?up\b|\blet'?s go\b|\bbook you\b/i,
     reply: {
-      text: `Wonderful. Tell us about your project — your name and WhatsApp number are enough — and you will get a tailored proposal ${responseTimePhrase}. No obligation.`,
-      link: { href: "/start", label: "Tell us about your project" },
+      text: `Book a strategy call with Innocent — your name and WhatsApp number are enough, and budget is optional. He replies ${responseTimePhrase}.`,
+      link: { href: "/strategy-call", label: "Book a strategy call" },
     },
   },
   {
