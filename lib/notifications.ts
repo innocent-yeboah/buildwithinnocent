@@ -175,6 +175,36 @@ export async function sendAssessmentWhatsAppNotification(
   return sendWhatsAppText(body);
 }
 
+/**
+ * Emails the respondent their scorecard result.
+ * No-ops when Resend is not configured so a missing key never hides the result.
+ */
+export async function sendScorecardResultEmail(input: {
+  to: string;
+  fullName: string;
+  text: string;
+}): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || !input.to) {
+    console.warn("Scorecard result email skipped — Resend or the recipient is not configured.");
+    return false;
+  }
+
+  const resend = new Resend(apiKey);
+  const firstName = input.fullName.split(" ")[0] || "there";
+  await withBackoff(async () => {
+    const { error } = await resend.emails.send({
+      from: resendFromAddress(),
+      to: input.to,
+      replyTo: site.email ?? undefined,
+      subject: `Your AI Readiness Scorecard, ${firstName}`,
+      text: input.text,
+    });
+    if (error) throw new Error(`Resend error: ${error.message}`);
+  });
+  return true;
+}
+
 function buildConfirmationHtml(lead: LeadInput, firstName: string): string {
   return `<!DOCTYPE html>
 <html lang="en">

@@ -88,6 +88,23 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section aria-labelledby="scorecard-title" className="border-b border-primary-100 bg-primary-50 py-10 sm:py-12">
+        <div className="container-site flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+          <div className="max-w-2xl">
+            <p className="section-eyebrow">Free AI Readiness Scorecard</p>
+            <h2 id="scorecard-title" className="font-display text-2xl font-bold text-primary sm:text-3xl">
+              Ten questions. A score out of 20. A place to start.
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-ink/75 sm:text-base">
+              See whether sales, AI adoption, or revenue goals is the first thing to fix.
+            </p>
+          </div>
+          <Link href="/scorecard" className="btn-secondary shrink-0">
+            Take the scorecard <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
+      </section>
+
       <section aria-labelledby="fit-title" className="bg-white py-16 sm:py-20">
         <div className="container-site grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
