@@ -18,7 +18,7 @@ const initialMessages: Message[] = [
   {
     id: 0,
     from: "bot",
-    text: "Hi! I am the Build With Innocent assistant. Ask me anything about pricing, timelines, or what we build — or jump straight to WhatsApp for a human.",
+    text: "Hi. I am the assistant for Innocent. Ask about the timeline, what is included, payment, or the strategy call — or tap a question below.",
   },
 ];
 
