@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/strategy-call", priority: 1 },
     { path: "/start", priority: 0.9 },
     { path: "/assessment", priority: 0.9 },
+    { path: "/scorecard", priority: 0.9 },
     { path: "/demo", priority: 0.8 },
     { path: "/demo/booking", priority: 0.6 },
     { path: "/demo/dashboard", priority: 0.6 },

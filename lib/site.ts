@@ -171,6 +171,7 @@ export const moreLinks = [
 
 /** Free tools and secondary destinations, surfaced in the footer. */
 export const toolLinks = [
+  { href: "/scorecard", label: "Free AI Readiness Scorecard" },
   { href: "/assessment", label: "Free Assessment" },
   { href: "/demo", label: "Live Demo" },
   { href: "/experience", label: "3D Experience" },
