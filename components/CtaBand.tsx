@@ -1,5 +1,6 @@
 import Link from "next/link";
 import RevealOnScroll from "@/components/RevealOnScroll";
+import { responseTimePhrase } from "@/lib/site";
 
 type CtaBandProps = {
   title?: string;
@@ -13,7 +14,7 @@ type CtaBandProps = {
  */
 export default function CtaBand({
   title = "Ready to Grow While You Sleep?",
-  subtitle = "Tell us about your project. We will send a tailored proposal within 24-48 hours.",
+  subtitle = `Tell us about your project. We will send a tailored proposal ${responseTimePhrase}.`,
   buttonLabel = "Tell Us About Your Project",
 }: CtaBandProps) {
   return (

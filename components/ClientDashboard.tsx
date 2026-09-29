@@ -108,14 +108,20 @@ export default function ClientDashboard() {
           Client sign-in is not switched on for this deployment yet. Reach us
           directly and we will help right away.
         </p>
-        <a
-          href={site.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary mt-5 !px-6 !py-2.5 !text-sm"
-        >
-          Message Us on WhatsApp
-        </a>
+        {site.whatsappUrl ? (
+          <a
+            href={site.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary mt-5 !px-6 !py-2.5 !text-sm"
+          >
+            Message Us on WhatsApp
+          </a>
+        ) : site.email ? (
+          <a href={`mailto:${site.email}`} className="btn-primary mt-5 !px-6 !py-2.5 !text-sm">
+            Email Us
+          </a>
+        ) : null}
       </div>
     );
   }
@@ -160,14 +166,20 @@ export default function ClientDashboard() {
             it together.
           </p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <a
-              href={site.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary !px-6 !py-3 !text-sm"
-            >
-              Message Us on WhatsApp
-            </a>
+            {site.whatsappUrl ? (
+              <a
+                href={site.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary !px-6 !py-3 !text-sm"
+              >
+                Message Us on WhatsApp
+              </a>
+            ) : site.email ? (
+              <a href={`mailto:${site.email}`} className="btn-primary !px-6 !py-3 !text-sm">
+                Email Us
+              </a>
+            ) : null}
             <Link href="/start" className="btn-secondary !px-6 !py-3 !text-sm">
               Start a New Project
             </Link>
@@ -304,20 +316,24 @@ export default function ClientDashboard() {
                     Need anything? Your partnership includes direct support.
                   </p>
                   <div className="flex gap-3">
-                    <a
-                      href={site.whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-lg bg-growth px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-growth-600"
-                    >
-                      WhatsApp Us
-                    </a>
-                    <a
-                      href={`mailto:${site.email}`}
-                      className="rounded-lg border-2 border-growth px-4 py-2 text-sm font-bold text-growth-700 transition-colors hover:bg-growth hover:text-white"
-                    >
-                      Email Support
-                    </a>
+                    {site.whatsappUrl && (
+                      <a
+                        href={site.whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-lg bg-growth px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-growth-600"
+                      >
+                        WhatsApp Us
+                      </a>
+                    )}
+                    {site.email && (
+                      <a
+                        href={`mailto:${site.email}`}
+                        className="rounded-lg border-2 border-growth px-4 py-2 text-sm font-bold text-growth-700 transition-colors hover:bg-growth hover:text-white"
+                      >
+                        Email Support
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

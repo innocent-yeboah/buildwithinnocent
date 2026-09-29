@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import LeadForm from "@/components/LeadForm";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import { site } from "@/lib/site";
+import { responseTimePhrase, site } from "@/lib/site";
 import {
   ShieldCheckIcon,
   GlobeIcon,
@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Start Your System — Tell Us About Your Project",
   description:
-    "Tell us about your project and receive a tailored proposal within 24-48 hours. 10+ leads in 30 days or we work for free.",
+    `Tell us about your project and receive a tailored proposal ${responseTimePhrase}. 10+ leads in 30 days or we work for free.`,
   alternates: { canonical: "/start" },
 };
 
@@ -89,9 +89,21 @@ export default function StartPage() {
             className="animate-fade-up mt-5 text-lg text-primary-100"
             style={{ animationDelay: "150ms" }}
           >
-            We will send a tailored proposal within 24-48 hours — what we
+            We will send a tailored proposal {responseTimePhrase} — what we
             would build, how long it takes, and exactly what it costs.
           </p>
+          {site.whatsappUrl && (
+            <p className="animate-fade-up mt-6" style={{ animationDelay: "200ms" }}>
+              <a
+                href={site.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded-full border border-white/40 px-5 py-2 text-sm font-semibold text-white hover:bg-white/10"
+              >
+                Prefer WhatsApp? Message us directly
+              </a>
+            </p>
+          )}
           <p
             className="animate-fade-up mx-auto mt-6 flex w-fit items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-5 py-2 text-sm font-semibold text-gold"
             style={{ animationDelay: "250ms" }}
@@ -114,16 +126,16 @@ export default function StartPage() {
                 <ol className="mt-6 space-y-5">
                   {[
                     {
-                      title: "Instant confirmation",
-                      description: "You get an email confirming we received your project.",
+                      title: "We get your details",
+                      description: "Your name and WhatsApp number are enough to start.",
                     },
                     {
                       title: "We study your business",
                       description: "Innocent personally reviews every submission.",
                     },
                     {
-                      title: "Tailored proposal in 24-48 hours",
-                      description: "Scope, timeline, and price — clear and in writing.",
+                      title: `A reply ${responseTimePhrase}`,
+                      description: "Scope, timeline, and price — on WhatsApp, or by email if you left one.",
                     },
                   ].map((step, index) => (
                     <li key={step.title} className="flex gap-4">
@@ -184,8 +196,8 @@ export default function StartPage() {
                   <CheckIcon className="h-5 w-5" />
                 </span>
                 <p className="text-sm font-medium text-ink/70">
-                  Takes about 3 minutes. Every field helps us build a better
-                  proposal for you.
+                  Your name, WhatsApp number, and type of business are enough.
+                  Everything else can wait.
                 </p>
               </div>
               <LeadForm />

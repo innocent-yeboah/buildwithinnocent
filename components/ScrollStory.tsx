@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { getGsap } from "@/lib/gsap";
 import HeroMarketingScreen from "@/components/HeroMarketingScreen";
@@ -35,9 +34,10 @@ const deliverables = [
 ];
 
 /**
- * Cinematic homepage scrollytelling.
- * Each panel is pinned; GSAP ScrollTrigger timelines scrub strictly
- * against scroll position (not wall-clock timers).
+ * Homepage scrollytelling.
+ * The opening hero is server-rendered at full opacity. Scroll may fade it
+ * out; it is never animated in. Pinning is desktop-only so phones get a
+ * normal scrolling page.
  */
 export default function ScrollStory() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -48,7 +48,9 @@ export default function ScrollStory() {
     if (!root) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    // Pinned panels hide content until you scroll and are heavy on low-end phones.
+    if (reduceMotion || isMobile) return;
 
     const { gsap, ScrollTrigger } = getGsap();
     const ctx = gsap.context(() => {
@@ -67,41 +69,21 @@ export default function ScrollStory() {
       }
 
       // ------- Panel 1: Opening -------
+      // Fade OUT only. fromTo would set opacity 0 on first paint.
       const panel1 = root.querySelector<HTMLElement>("[data-panel='opening']");
       if (panel1) {
-        const tl = gsap.timeline({
+        gsap.to(panel1.querySelectorAll("[data-anim='open-copy']"), {
+          y: -40,
+          opacity: 0.35,
+          ease: "none",
           scrollTrigger: {
             trigger: panel1,
             start: "top top",
-            end: "+=140%",
+            end: "+=80%",
             pin: true,
             scrub: 1,
-            anticipatePin: 1,
           },
         });
-        tl.fromTo(
-          panel1.querySelectorAll("[data-anim='open-copy']"),
-          { y: 64, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.12, ease: "none" },
-          0,
-        )
-          .fromTo(
-            panel1.querySelector("[data-anim='open-image']"),
-            { scale: 1.25, opacity: 0.35 },
-            { scale: 1, opacity: 1, ease: "none" },
-            0,
-          )
-          .fromTo(
-            panel1.querySelector("[data-anim='open-screen']"),
-            { y: 80, opacity: 0, scale: 0.92 },
-            { y: 0, opacity: 1, scale: 1, ease: "none" },
-            0.15,
-          )
-          .to(panel1.querySelectorAll("[data-anim='open-copy']"), {
-            y: -40,
-            opacity: 0.35,
-            ease: "none",
-          });
       }
 
       // ------- Panel 2: Overnight -------
@@ -239,39 +221,6 @@ export default function ScrollStory() {
           );
       }
 
-      // ------- Panel 6: Closing -------
-      const panel6 = root.querySelector<HTMLElement>("[data-panel='close']");
-      if (panel6) {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: panel6,
-            start: "top top",
-            end: "+=120%",
-            pin: true,
-            scrub: 1,
-            anticipatePin: 1,
-          },
-        });
-        tl.fromTo(
-          panel6.querySelector("[data-anim='close-title']"),
-          { scale: 1.12, opacity: 0 },
-          { scale: 1, opacity: 1, ease: "none" },
-          0,
-        )
-          .fromTo(
-            panel6.querySelector("[data-anim='close-body']"),
-            { y: 40, opacity: 0 },
-            { y: 0, opacity: 1, ease: "none" },
-            0.2,
-          )
-          .fromTo(
-            panel6.querySelector("[data-anim='close-cta']"),
-            { y: 30, opacity: 0, scale: 0.96 },
-            { y: 0, opacity: 1, scale: 1, ease: "none" },
-            0.4,
-          );
-      }
-
       ScrollTrigger.refresh();
     }, root);
 
@@ -285,7 +234,7 @@ export default function ScrollStory() {
       {/* Scroll progress — driven by ScrollTrigger scrub */}
       <div
         aria-hidden="true"
-        className="fixed left-0 top-0 z-[60] h-1 w-full origin-left scale-x-0 bg-gold"
+        className="fixed left-0 top-0 z-[60] hidden h-1 w-full origin-left scale-x-0 bg-gold md:block"
         ref={progressRef}
       />
 
@@ -293,32 +242,22 @@ export default function ScrollStory() {
       <section
         data-panel="opening"
         aria-labelledby="hero-title"
-        className="relative flex min-h-[100svh] items-center overflow-hidden"
+        className="relative flex min-h-[100svh] items-center overflow-x-hidden bg-primary"
       >
-        <div data-anim="open-image" className="absolute inset-0">
-          <Image
-            src="/images/hero-team.png"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[center_30%]"
-            aria-hidden="true"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/70 to-primary-900/90" />
-        </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-br from-primary via-primary-800 to-primary-900"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -right-24 top-10 h-72 w-72 rounded-full bg-gold/15 blur-3xl"
+        />
 
-        <div className="container-site relative z-10 grid w-full items-center gap-10 py-20 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="container-site relative z-10 grid w-full items-center gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
           <div className="text-center lg:text-left">
             <p
               data-anim="open-copy"
-              className="font-display text-2xl font-bold text-gold sm:text-3xl"
-            >
-              Build With Innocent
-            </p>
-            <p
-              data-anim="open-copy"
-              className="mt-2 text-sm font-medium uppercase tracking-[0.2em] text-white/90"
+              className="text-sm font-medium uppercase tracking-[0.2em] text-gold"
             >
               {site.tagline}
             </p>
@@ -345,10 +284,31 @@ export default function ScrollStory() {
               <Link href="/start" className="btn-primary text-lg">
                 Start Your System <span aria-hidden="true">&rarr;</span>
               </Link>
-              <Link href="/how-it-works" className="btn-ghost-light">
-                See How It Works
-              </Link>
+              {site.whatsappUrl ? (
+                <a
+                  href={site.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-ghost-light"
+                >
+                  WhatsApp Us
+                </a>
+              ) : (
+                <Link href="/how-it-works" className="btn-ghost-light">
+                  See How It Works
+                </Link>
+              )}
             </div>
+            {site.whatsappUrl && (
+              <p data-anim="open-copy" className="mt-4 text-sm">
+                <Link
+                  href="/how-it-works"
+                  className="font-semibold text-white/90 underline-offset-4 hover:underline"
+                >
+                  See how it works
+                </Link>
+              </p>
+            )}
             <p
               data-anim="open-copy"
               className="mt-7 flex items-center justify-center gap-2 text-sm font-medium text-gold lg:justify-start"
@@ -358,7 +318,7 @@ export default function ScrollStory() {
             </p>
           </div>
 
-          <div data-anim="open-screen" className="mx-auto hidden lg:block">
+          <div className="mx-auto hidden lg:block">
             <HeroMarketingScreen />
           </div>
         </div>
@@ -368,7 +328,7 @@ export default function ScrollStory() {
       <section
         data-panel="overnight"
         aria-labelledby="overnight-title"
-        className="relative flex min-h-[100svh] items-center overflow-hidden bg-primary-900"
+        className="relative flex items-center overflow-hidden bg-primary-900 py-16 lg:min-h-[100svh] lg:py-20"
       >
         <div className="container-site grid w-full items-center gap-12 py-20 lg:grid-cols-2">
           <div>
@@ -418,7 +378,7 @@ export default function ScrollStory() {
       <section
         data-panel="desire"
         aria-labelledby="desire-title"
-        className="relative flex min-h-[100svh] items-center overflow-hidden bg-white/90"
+        className="relative flex items-center overflow-hidden bg-white py-16 lg:min-h-[100svh] lg:py-20"
       >
         <div className="container-site mx-auto max-w-3xl py-20 text-center">
           <h2
@@ -457,7 +417,7 @@ export default function ScrollStory() {
       <section
         data-panel="system"
         aria-labelledby="system-title"
-        className="relative flex min-h-[100svh] items-center overflow-hidden bg-primary-50/90"
+        className="relative flex items-center overflow-hidden bg-primary-50 py-16 lg:min-h-[100svh] lg:py-20"
       >
         <div className="container-site w-full py-20">
           <h2
@@ -507,7 +467,7 @@ export default function ScrollStory() {
       <section
         data-panel="proof"
         aria-labelledby="proof-title"
-        className="relative flex min-h-[100svh] items-center overflow-hidden bg-primary"
+        className="relative flex items-center overflow-hidden bg-primary py-16 lg:min-h-[100svh] lg:py-20"
       >
         <div
           aria-hidden="true"
@@ -557,40 +517,6 @@ export default function ScrollStory() {
         </div>
       </section>
 
-      {/* ========== 6. CLOSE ========== */}
-      <section
-        data-panel="close"
-        aria-labelledby="close-title"
-        className="relative flex min-h-[100svh] items-center overflow-hidden bg-primary-900"
-      >
-        <div
-          aria-hidden="true"
-          className="absolute -left-24 bottom-0 h-96 w-96 rounded-full bg-growth/20 blur-3xl"
-        />
-        <div className="container-site relative z-10 max-w-3xl py-20 text-center">
-          <h2
-            id="close-title"
-            data-anim="close-title"
-            className="font-display text-3xl font-bold text-white sm:text-4xl lg:text-5xl"
-          >
-            You have been waiting for something to change.
-          </h2>
-          <p
-            data-anim="close-body"
-            className="mx-auto mt-6 max-w-2xl text-lg text-primary-100 sm:text-xl"
-          >
-            What if today was the day you stopped working harder and started
-            working smarter? Let us build a system that works for you. Not the
-            other way around.
-          </p>
-          <div data-anim="close-cta" className="mt-10">
-            <Link href="/start" className="btn-primary text-lg">
-              Tell Us About Your Project <span aria-hidden="true">&rarr;</span>
-            </Link>
-            <p className="mt-6 text-sm font-medium text-gold">{site.promise}</p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

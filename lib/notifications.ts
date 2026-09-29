@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { withBackoff } from "@/lib/retry";
-import { site } from "@/lib/site";
+import { responseTimePhrase, site } from "@/lib/site";
 import type { LeadInput } from "@/lib/leads";
 
 /**
@@ -8,11 +8,11 @@ import type { LeadInput } from "@/lib/leads";
  * No-ops (with a log) when RESEND_API_KEY is not configured so a missing
  * key never blocks lead capture.
  */
-export async function sendLeadConfirmationEmail(lead: LeadInput): Promise<void> {
+export async function sendLeadConfirmationEmail(lead: LeadInput): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn("RESEND_API_KEY not set — skipping confirmation email.");
-    return;
+  if (!apiKey || !lead.email) {
+    console.warn("Skipping confirmation email — Resend or the lead email is not set.");
+    return false;
   }
 
   const resend = new Resend(apiKey);
@@ -23,27 +23,84 @@ export async function sendLeadConfirmationEmail(lead: LeadInput): Promise<void> 
     const { error } = await resend.emails.send({
       from,
       to: lead.email,
-      replyTo: site.email,
-      subject: `We received your project, ${firstName} — proposal coming within 48 hours`,
+      replyTo: site.email ?? undefined,
+      subject: `We received your project, ${firstName}`,
       html: buildConfirmationHtml(lead, firstName),
       text: buildConfirmationText(lead, firstName),
     });
     if (error) throw new Error(`Resend error: ${error.message}`);
   });
+  return true;
+}
+
+function resendFromAddress(): string {
+  return process.env.RESEND_FROM_EMAIL ?? "Build With Innocent <onboarding@resend.dev>";
+}
+
+/**
+ * Emails the site owner. Returns false when Resend or the contact
+ * address is not configured, so callers can try another channel.
+ */
+/** Sends a plain email. Returns false when Resend is not configured. */
+export async function sendDirectEmail(to: string, subject: string, text: string): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey || !to) {
+    console.warn("Email skipped — Resend or the recipient is not configured.");
+    return false;
+  }
+
+  const resend = new Resend(apiKey);
+  await withBackoff(async () => {
+    const { error } = await resend.emails.send({
+      from: resendFromAddress(),
+      to,
+      subject,
+      text,
+    });
+    if (error) throw new Error(`Resend error: ${error.message}`);
+  });
+  return true;
+}
+
+export async function sendOwnerEmail(subject: string, text: string): Promise<boolean> {
+  if (!site.email) {
+    console.warn("Owner email skipped — the contact email is not configured.");
+    return false;
+  }
+  return sendDirectEmail(site.email, subject, text);
+}
+
+/** Full lead details to the owner when the database did not store the row. */
+export async function sendOwnerLeadAlert(lead: LeadInput, reason: string): Promise<boolean> {
+  return sendOwnerEmail(
+    `Unsaved lead — ${lead.fullName}`,
+    [
+      "A project enquiry was submitted but was NOT saved to the database.",
+      `Reason: ${reason}`,
+      "",
+      `Name: ${lead.fullName}`,
+      `Business: ${lead.businessName || "(not given)"}`,
+      `Type of business: ${lead.industry}`,
+      `Email: ${lead.email || "(not given)"}`,
+      `WhatsApp / phone: ${lead.phone}`,
+      "",
+      `Project: ${lead.projectDetails || "(not given)"}`,
+    ].join("\n"),
+  );
 }
 
 /**
  * Sends a free-form WhatsApp text via the Cloud API.
  * No-ops when the WhatsApp environment is not configured.
  */
-async function sendWhatsAppText(body: string): Promise<void> {
+async function sendWhatsAppText(body: string): Promise<boolean> {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   const recipient = process.env.WHATSAPP_NOTIFY_NUMBER;
 
   if (!token || !phoneNumberId || !recipient) {
     console.warn("WhatsApp env not fully set — skipping WhatsApp notification.");
-    return;
+    return false;
   }
 
   await withBackoff(async () => {
@@ -68,12 +125,13 @@ async function sendWhatsAppText(body: string): Promise<void> {
       throw new Error(`WhatsApp API ${response.status}: ${detail}`);
     }
   });
+  return true;
 }
 
 /**
  * Notifies Innocent on WhatsApp about a new lead.
  */
-export async function sendWhatsAppNotification(lead: LeadInput): Promise<void> {
+export async function sendWhatsAppNotification(lead: LeadInput): Promise<boolean> {
   const body = [
     "🔔 New lead on Build With Innocent",
     "",
@@ -83,10 +141,10 @@ export async function sendWhatsAppNotification(lead: LeadInput): Promise<void> {
     `Email: ${lead.email}`,
     `Phone: ${lead.phone}`,
     "",
-    `Project: ${lead.projectDetails.slice(0, 600)}`,
+    `Project: ${lead.projectDetails.slice(0, 600) || "(not given)"}`,
   ].join("\n");
 
-  await sendWhatsAppText(body);
+  return sendWhatsAppText(body);
 }
 
 type AssessmentAlert = {
@@ -102,7 +160,7 @@ type AssessmentAlert = {
  */
 export async function sendAssessmentWhatsAppNotification(
   assessment: AssessmentAlert,
-): Promise<void> {
+): Promise<boolean> {
   const body = [
     "📊 New assessment completed",
     "",
@@ -114,7 +172,7 @@ export async function sendAssessmentWhatsAppNotification(
     `View funnel: ${site.url}/admin/analytics`,
   ].join("\n");
 
-  await sendWhatsAppText(body);
+  return sendWhatsAppText(body);
 }
 
 function buildConfirmationHtml(lead: LeadInput, firstName: string): string {
@@ -137,7 +195,7 @@ function buildConfirmationHtml(lead: LeadInput, firstName: string): string {
             <ol style="margin:0 0 16px;padding-left:20px;">
               <li style="margin-bottom:8px;">Innocent personally reviews your submission.</li>
               <li style="margin-bottom:8px;">We prepare a tailored proposal — scope, timeline, and price.</li>
-              <li>You receive it within <strong>24-48 hours</strong>.</li>
+              <li>You receive it <strong>${responseTimePhrase}</strong>.</li>
             </ol>
             <p style="margin:0 0 24px;">In the meantime, feel free to reply to this email with anything you forgot to mention — screenshots, links, ideas. It all helps.</p>
             <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
@@ -152,7 +210,7 @@ function buildConfirmationHtml(lead: LeadInput, firstName: string): string {
         <tr>
           <td style="background:#0E1F35;padding:24px 32px;text-align:center;color:#AFC6E0;font-size:12px;line-height:1.6;">
             <p style="margin:0;">Build With Innocent — Digital Business Systems for African Enterprises</p>
-            <p style="margin:8px 0 0;"><a href="${site.url}" style="color:#FFC107;text-decoration:none;">${site.url.replace("https://", "")}</a> &nbsp;•&nbsp; ${site.phoneDisplay}</p>
+            <p style="margin:8px 0 0;"><a href="${site.url}" style="color:#FFC107;text-decoration:none;">${site.url.replace("https://", "")}</a>${site.phoneDisplay ? ` &nbsp;•&nbsp; ${site.phoneDisplay}` : ""}</p>
           </td>
         </tr>
       </table>
@@ -171,7 +229,7 @@ function buildConfirmationText(lead: LeadInput, firstName: string): string {
     "What happens next:",
     "1. Innocent personally reviews your submission.",
     "2. We prepare a tailored proposal — scope, timeline, and price.",
-    "3. You receive it within 24-48 hours.",
+    `3. You receive it ${responseTimePhrase}.`,
     "",
     "Our promise: 10+ leads in 30 days or we work for free.",
     "",

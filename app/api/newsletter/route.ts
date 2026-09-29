@@ -2,14 +2,17 @@ import { NextResponse, type NextRequest } from "next/server";
 import { Resend } from "resend";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { withBackoff } from "@/lib/retry";
-import { site } from "@/lib/site";
+import { screenPublicWrite } from "@/lib/abuse";
+import { isValidEmail } from "@/lib/email";
+import { publicFallback, site } from "@/lib/site";
+import { sendOwnerEmail } from "@/lib/notifications";
 
 export const runtime = "nodejs";
 
 /**
  * Newsletter subscription: stores the subscriber (idempotently) and sends
- * a warm welcome email. Re-subscribing an existing address succeeds
- * quietly rather than erroring.
+ * a welcome email. If storage fails, the address is emailed to the owner
+ * instead of pretending the person is subscribed.
  */
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
@@ -19,11 +22,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Unreadable submission." }, { status: 400 });
   }
 
+  const screened = await screenPublicWrite(request, body);
+  if (screened) return screened;
+
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 200) : "";
   const fullName = typeof body.fullName === "string" ? body.fullName.trim().slice(0, 120) : "";
   const source = typeof body.source === "string" ? body.source.slice(0, 60) : "newsletter_page";
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+  if (!isValidEmail(email)) {
     return NextResponse.json(
       { message: "That email does not look right — mind checking it?" },
       { status: 422 },
@@ -31,9 +37,38 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = getSupabaseAdmin();
+
+  async function holdForOwner(reason: string): Promise<boolean> {
+    console.error(`Newsletter subscriber was not saved. ${reason}`);
+    try {
+      return await sendOwnerEmail(
+        "Unsaved newsletter signup",
+        [
+          "Someone tried to subscribe, but the address was NOT saved.",
+          `Reason: ${reason}`,
+          "",
+          `Email: ${email}`,
+          `Name: ${fullName || "(not given)"}`,
+          `Source: ${source}`,
+        ].join("\n"),
+      );
+    } catch (error) {
+      console.error("Owner email for unsaved subscriber failed:", error);
+      return false;
+    }
+  }
+
   if (!supabase) {
+    const notified = await holdForOwner("Supabase is not configured.");
     return NextResponse.json(
-      { message: "Our system is taking a short breath. Please try again in a moment." },
+      {
+        saved: false,
+        notified,
+        message: notified
+          ? "We could not add you to the list just now, but we sent your email to Innocent so it is not lost."
+          : "We could not add you to the list just now. Please email us directly so we can add you.",
+        fallback: publicFallback(),
+      },
       { status: 503 },
     );
   }
@@ -55,13 +90,20 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Failed to save subscriber:", error);
+    const notified = await holdForOwner("The database insert failed.");
     return NextResponse.json(
-      { message: "We could not save your subscription just now. Please try again in a moment." },
-      { status: 500 },
+      {
+        saved: false,
+        notified,
+        message: notified
+          ? "We could not add you to the list just now, but we sent your email to Innocent so it is not lost."
+          : "We could not add you to the list just now. Please email us directly so we can add you.",
+        fallback: publicFallback(),
+      },
+      { status: 503 },
     );
   }
 
-  // Welcome email — best effort.
   const apiKey = process.env.RESEND_API_KEY;
   if (apiKey) {
     try {
@@ -75,7 +117,7 @@ export async function POST(request: NextRequest) {
         const { error } = await resend.emails.send({
           from,
           to: email,
-          replyTo: site.email,
+          replyTo: site.email ?? undefined,
           subject: "Welcome — one useful idea, every two weeks",
           text: [
             `Hi ${firstName},`,
@@ -89,7 +131,7 @@ export async function POST(request: NextRequest) {
             `- The live demo of the system we build: ${site.url}/demo`,
             "",
             "Talk soon,",
-            `${site.founder}`,
+            site.founder,
             site.name,
             "",
             `Unsubscribe anytime (one click): ${unsubscribeUrl}`,
@@ -105,5 +147,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ message: "Subscribed." }, { status: 201 });
+  return NextResponse.json({ saved: true, message: "Subscribed." }, { status: 201 });
 }

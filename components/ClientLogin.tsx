@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 import { site } from "@/lib/site";
+import { isValidEmail } from "@/lib/email";
 import { MailIcon, CheckIcon } from "@/components/Icons";
 
 type State = "idle" | "sending" | "sent" | "error" | "unconfigured";
@@ -43,7 +44,7 @@ export default function ClientLogin() {
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+    if (!isValidEmail(email)) {
       setState("error");
       setMessage("That email does not look right — mind checking it?");
       return;
@@ -87,14 +88,20 @@ export default function ClientLogin() {
           Client sign-in is not switched on for this deployment yet. If you
           are an active client, reach us directly and we will sort you out.
         </p>
-        <a
-          href={site.whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary mt-5 !px-6 !py-2.5 !text-sm"
-        >
-          Message Us on WhatsApp
-        </a>
+        {site.whatsappUrl ? (
+          <a
+            href={site.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary mt-5 !px-6 !py-2.5 !text-sm"
+          >
+            Message Us on WhatsApp
+          </a>
+        ) : site.email ? (
+          <a href={`mailto:${site.email}`} className="btn-primary mt-5 !px-6 !py-2.5 !text-sm">
+            Email Us
+          </a>
+        ) : null}
       </div>
     );
   }

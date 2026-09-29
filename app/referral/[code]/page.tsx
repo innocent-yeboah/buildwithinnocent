@@ -39,8 +39,13 @@ async function getReferrerName(code: string): Promise<string | null> {
 
     if (!data) return null;
 
-    // Fire-and-forget click counter; a failure here is invisible.
-    void supabase.rpc("increment_referral_clicks", { ref_code: code });
+    // Must be awaited. Supabase query builders do not run until then().
+    const { error: clickError } = await supabase.rpc("increment_referral_clicks", {
+      ref_code: code,
+    });
+    if (clickError) {
+      console.error("Referral click increment failed:", clickError.message);
+    }
 
     return (data.referrer_name as string).split(" ")[0];
   } catch {

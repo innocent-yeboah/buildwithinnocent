@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
-import { site } from "@/lib/site";
+import { responseTimePhrase, site } from "@/lib/site";
 import { SparkIcon, ChartIcon, GlobeIcon, ShieldCheckIcon } from "@/components/Icons";
 
 export const metadata: Metadata = {
@@ -181,7 +181,7 @@ export default function AboutPage() {
 
       <CtaBand
         title="Let's Build Your System Together."
-        subtitle="Tell me about your business. I will personally review it and send you a tailored proposal within 24-48 hours."
+        subtitle={`Tell me about your business. I will personally review it and send you a tailored proposal ${responseTimePhrase}.`}
       />
     </>
   );

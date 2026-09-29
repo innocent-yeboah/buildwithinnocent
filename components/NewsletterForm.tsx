@@ -3,6 +3,9 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { trackNewsletterSignup } from "@/lib/pixels";
+import { isValidEmail } from "@/lib/email";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
+import { FormLegalNote, HoneypotField, TurnstileWidget } from "@/components/FormGuards";
 
 type NewsletterFormProps = {
   /** Recorded in Supabase so you know which page converts subscribers. */
@@ -18,12 +21,14 @@ export default function NewsletterForm({ source = "newsletter_page" }: Newslette
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+    if (!isValidEmail(email)) {
       setError("That email does not look right — mind checking it?");
       return;
     }
@@ -33,10 +38,20 @@ export default function NewsletterForm({ source = "newsletter_page" }: Newslette
       const response = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, fullName, source }),
+        body: JSON.stringify({
+          email,
+          fullName,
+          source,
+          [HONEYPOT_FIELD]: honeypot,
+          turnstileToken,
+        }),
       });
-      if (!response.ok) {
-        const payload = (await response.json()) as { message?: string };
+      const payload = (await response.json()) as { message?: string; saved?: boolean; ignored?: boolean };
+      if (payload.ignored) {
+        router.push("/newsletter/thank-you");
+        return;
+      }
+      if (!response.ok || !payload.saved) {
         setError(payload.message ?? "Something interrupted us. Let's try that again together?");
         return;
       }
@@ -50,7 +65,8 @@ export default function NewsletterForm({ source = "newsletter_page" }: Newslette
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="relative space-y-4">
+      <HoneypotField value={honeypot} onChange={setHoneypot} />
       <div>
         <label htmlFor="nl-name" className="mb-1.5 block text-sm font-semibold text-primary">
           First Name <span className="font-normal text-ink/50">(optional)</span>
@@ -95,9 +111,11 @@ export default function NewsletterForm({ source = "newsletter_page" }: Newslette
         {submitting ? "Signing you up…" : "Get the Newsletter"}
         {!submitting && <span aria-hidden="true">&rarr;</span>}
       </button>
+      <TurnstileWidget onToken={setTurnstileToken} />
       <p className="text-center text-xs text-ink/60">
         One email every two weeks. Unsubscribe anytime with one click.
       </p>
+      <FormLegalNote />
     </form>
   );
 }

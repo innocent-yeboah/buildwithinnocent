@@ -20,6 +20,24 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
+/**
+ * Constant-time string compare for the Edge runtime (no Node crypto).
+ * Length differences still take a full pass so a short secret is not obvious.
+ */
+function timingSafeEqualString(a: string, b: string): boolean {
+  const encoder = new TextEncoder();
+  const left = encoder.encode(a);
+  const right = encoder.encode(b);
+  const length = Math.max(left.length, right.length, 1);
+  let mismatch = left.length === right.length ? 0 : 1;
+  for (let i = 0; i < length; i++) {
+    const leftByte = i < left.length ? left[i] : 0;
+    const rightByte = i < right.length ? right[i] : 0;
+    mismatch |= leftByte ^ rightByte;
+  }
+  return mismatch === 0;
+}
+
 function protectAdmin(request: NextRequest) {
   const adminUser = process.env.ADMIN_USER;
   const adminPassword = process.env.ADMIN_PASSWORD;
@@ -35,7 +53,9 @@ function protectAdmin(request: NextRequest) {
       const separator = decoded.indexOf(":");
       const user = decoded.slice(0, separator);
       const password = decoded.slice(separator + 1);
-      if (user === adminUser && password === adminPassword) {
+      const userOk = timingSafeEqualString(user, adminUser);
+      const passwordOk = timingSafeEqualString(password, adminPassword);
+      if (userOk && passwordOk) {
         return NextResponse.next();
       }
     } catch {

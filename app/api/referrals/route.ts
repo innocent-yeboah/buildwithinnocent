@@ -2,6 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { randomBytes } from "crypto";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { withBackoff } from "@/lib/retry";
+import { screenPublicWrite } from "@/lib/abuse";
+import { isValidEmail } from "@/lib/email";
+import { site } from "@/lib/site";
+import { sendDirectEmail } from "@/lib/notifications";
 
 export const runtime = "nodejs";
 
@@ -22,6 +26,9 @@ function generateCode(name: string): string {
 
 /**
  * Creates a referral partner and their shareable code.
+ * An existing email does not get its code back in the response — that
+ * would let anyone who knows the address read the link. The code is
+ * emailed to that inbox instead.
  */
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
@@ -31,11 +38,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Unreadable submission." }, { status: 400 });
   }
 
+  const screened = await screenPublicWrite(request, body);
+  if (screened) return screened;
+
   const name = typeof body.name === "string" ? body.name.trim().slice(0, 120) : "";
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 200) : "";
   const phone = typeof body.phone === "string" ? body.phone.trim().slice(0, 30) : "";
 
-  if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+  if (name.length < 2 || !isValidEmail(email)) {
     return NextResponse.json(
       { message: "Please share your name and a valid email so we can track your rewards." },
       { status: 422 },
@@ -51,7 +61,6 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Returning partner? Give them their existing code back.
     const { data: existing } = await supabase
       .from("referrals")
       .select("code")
@@ -59,7 +68,36 @@ export async function POST(request: NextRequest) {
       .maybeSingle();
 
     if (existing?.code) {
-      return NextResponse.json({ code: existing.code }, { status: 200 });
+      const link = `${site.url}/referral/${existing.code}`;
+      let sent = false;
+      try {
+        sent = await sendDirectEmail(
+          email,
+          "Your Build With Innocent referral link",
+          [
+            `Hi ${name.split(" ")[0]},`,
+            "",
+            "You already have a referral link. Here it is again:",
+            link,
+            "",
+            "We do not show existing links on the website, so only this inbox receives the code.",
+            "",
+            site.name,
+          ].join("\n"),
+        );
+      } catch (error) {
+        console.error("Could not email an existing referral code:", error);
+      }
+
+      return NextResponse.json(
+        {
+          existing: true,
+          message: sent
+            ? "This email already has a referral link. We sent it to that inbox instead of showing it here."
+            : "This email already has a referral link. We could not email it just now — message us and we will resend it.",
+        },
+        { status: 200 },
+      );
     }
 
     const code = generateCode(name);

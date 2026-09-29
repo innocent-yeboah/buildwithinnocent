@@ -79,32 +79,32 @@ export default function Footer() {
             Talk to Us
           </p>
           <ul className="space-y-2.5 text-sm text-primary-100">
-            <li>
-              <a
-                href={`mailto:${site.email}`}
-                className="transition-colors hover:text-gold"
-              >
-                {site.email}
-              </a>
-            </li>
-            <li>
-              <a
-                href={`tel:${site.phone}`}
-                className="transition-colors hover:text-gold"
-              >
-                {site.phoneDisplay}
-              </a>
-            </li>
-            <li>
-              <a
-                href={site.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-gold"
-              >
-                WhatsApp Us
-              </a>
-            </li>
+            {site.email && (
+              <li>
+                <a href={`mailto:${site.email}`} className="transition-colors hover:text-gold">
+                  {site.email}
+                </a>
+              </li>
+            )}
+            {site.phone && site.phoneDisplay && (
+              <li>
+                <a href={`tel:${site.phone}`} className="transition-colors hover:text-gold">
+                  {site.phoneDisplay}
+                </a>
+              </li>
+            )}
+            {site.whatsappUrl && (
+              <li>
+                <a
+                  href={site.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-gold transition-colors hover:text-gold-300"
+                >
+                  WhatsApp Us
+                </a>
+              </li>
+            )}
           </ul>
           <ul className="mt-5 flex gap-4" aria-label="Social media">
             <li>
@@ -152,6 +152,14 @@ export default function Footer() {
             &copy; {year} {site.name}. All rights reserved.
           </p>
           <p>Built with the same system we sell. Proudly African.</p>
+          <p className="flex gap-4">
+            <Link href="/privacy" className="hover:text-gold">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-gold">
+              Terms
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

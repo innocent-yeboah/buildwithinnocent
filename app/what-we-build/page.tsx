@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
-import { site } from "@/lib/site";
+import { responseTimePhrase, site } from "@/lib/site";
 import {
   GlobeIcon,
   DashboardIcon,
@@ -259,7 +259,7 @@ export default function WhatWeBuildPage() {
 
       <CtaBand
         title="Your Complete System Starts With One Conversation."
-        subtitle="Tell us about your project and get a tailored proposal within 24-48 hours."
+        subtitle={`Tell us about your project and get a tailored proposal ${responseTimePhrase}.`}
       />
     </>
   );

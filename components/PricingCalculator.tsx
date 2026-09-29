@@ -201,6 +201,17 @@ export default function PricingCalculator() {
           <p className="text-xs font-bold uppercase tracking-widest text-gold">
             Your Estimate
           </p>
+          <p className="mt-3 text-sm leading-relaxed text-primary-100">
+            This figure is only the modules ticked on the left. The page opens
+            with website, booking, and payments (
+            GHS {modules
+              .filter((module) => ["website", "booking", "payments"].includes(module.id))
+              .reduce((sum, module) => sum + module.price, 0)
+              .toLocaleString()}
+            ). The complete partnership on the homepage is GHS{" "}
+            {COMPLETE_SYSTEM_PRICE.toLocaleString()} — every module, plus a year
+            of hosting and support.
+          </p>
 
           <div className="mt-4">
             {plan === "once" ? (

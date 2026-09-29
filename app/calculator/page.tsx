@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PricingCalculator from "@/components/PricingCalculator";
 import CtaBand from "@/components/CtaBand";
+import { responseTimePhrase } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Pricing Calculator — Estimate Your Digital Business System",
@@ -37,7 +38,7 @@ export default function CalculatorPage() {
 
       <CtaBand
         title="Your Exact Proposal Is One Message Away."
-        subtitle="The calculator gives you a solid estimate. Tell us about your project and we will confirm the exact scope and price within 24-48 hours."
+        subtitle={`The calculator gives you a solid estimate. Tell us about your project and we will confirm the exact scope and price ${responseTimePhrase}.`}
       />
     </>
   );

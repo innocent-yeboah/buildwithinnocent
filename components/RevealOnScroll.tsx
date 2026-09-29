@@ -11,8 +11,8 @@ type RevealOnScrollProps = {
 
 /**
  * Fades and lifts content into view as the user scrolls.
- * Content is fully visible without JavaScript or when the user
- * prefers reduced motion (handled in globals.css).
+ * The hidden state is applied in an effect, after JavaScript is running.
+ * Without JavaScript the content stays visible. Reduced motion skips the effect.
  */
 export default function RevealOnScroll({
   children,
@@ -24,6 +24,16 @@ export default function RevealOnScroll({
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Arm the hidden state only after this effect runs, so a failed script
+    // bundle never leaves the content at opacity 0. Elements already on
+    // screen are marked visible in the same turn, before the armed class.
+    const rect = element.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight * 0.95 && rect.bottom > 0;
+    if (inView) element.classList.add("reveal-visible");
+    element.classList.add("reveal-armed");
 
     const observer = new IntersectionObserver(
       (entries) => {

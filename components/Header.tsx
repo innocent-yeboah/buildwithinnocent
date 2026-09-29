@@ -64,6 +64,16 @@ export default function Header() {
               </Link>
             );
           })}
+          {site.whatsappUrl && (
+            <a
+              href={site.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-2 rounded-lg px-3.5 py-2 text-sm font-semibold text-growth-700 hover:bg-growth-50"
+            >
+              WhatsApp
+            </a>
+          )}
           <Link href="/start" className="btn-primary ml-3 !px-5 !py-2.5 !text-sm">
             Start Your System
             <span aria-hidden="true">&rarr;</span>
@@ -119,6 +129,18 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            {site.whatsappUrl && (
+              <li className="mt-2">
+                <a
+                  href={site.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-lg bg-growth px-4 py-3 text-center text-base font-semibold text-white"
+                >
+                  WhatsApp Us
+                </a>
+              </li>
+            )}
             <li className="mt-3">
               <Link href="/start" className="btn-primary w-full">
                 Start Your System <span aria-hidden="true">&rarr;</span>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
+import { responseTimePhrase } from "@/lib/site";
 import { ChartIcon, ClockIcon, RepeatIcon, SparkIcon } from "@/components/Icons";
 
 export const metadata: Metadata = {
@@ -293,7 +294,7 @@ export default function CaseStudiesPage() {
 
       <CtaBand
         title="Your Before-and-After Starts Today."
-        subtitle="Tell us where your business is now. We will show you exactly what the after looks like — in a tailored proposal within 24-48 hours."
+        subtitle={`Tell us where your business is now. We will show you exactly what the after looks like — in a tailored proposal ${responseTimePhrase}.`}
       />
     </>
   );
