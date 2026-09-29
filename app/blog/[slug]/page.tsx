@@ -138,6 +138,8 @@ export default function BlogPostPage({ params }: PageProps) {
                 alt={site.founderPhotoAlt}
                 width={1200}
                 height={1200}
+                quality={95}
+                sizes="56px"
                 className="h-14 w-14 shrink-0 rounded-full object-cover"
               />
               <div>

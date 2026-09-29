@@ -204,7 +204,7 @@ export default function HomePage() {
 
       <section aria-labelledby="founder-title" className="bg-primary py-16 text-white sm:py-20">
         <div className="container-site grid items-center gap-10 lg:grid-cols-[280px_1fr]">
-          <FounderPortrait />
+          <FounderPortrait sizes="(min-width: 1024px) 280px, calc(100vw - 2rem)" />
           <div>
             <p className="section-eyebrow !text-gold">The person you hire</p>
             <h2 id="founder-title" className="section-title !text-white">
