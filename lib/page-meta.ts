@@ -35,11 +35,14 @@ export function pageMeta({
       description,
       url: path,
       siteName: site.name,
+      // Setting openGraph replaces the layout tags, including the file-based image.
+      images: [{ url: "/opengraph-image.png", alt: site.name }],
     },
     twitter: {
       card: "summary_large_image",
       title: socialTitle,
       description,
+      images: ["/twitter-image.png"],
     },
     ...(robots ? { robots } : {}),
   };
