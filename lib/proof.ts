@@ -55,7 +55,19 @@ export type MeasuredPerformance = {
   scores: { label: string; value: number }[];
 };
 
-export const measuredPerformance: MeasuredPerformance | null = null;
+export const measuredPerformance: MeasuredPerformance | null = {
+  measuredOn: "29 September 2026",
+  tool: "Lighthouse 12.8.2",
+  url: "http://localhost:3000/",
+  notes:
+    "Homepage, local production build, mobile form factor. Lab data, not a field test on a phone. Largest contentful paint in that run was 2.4s.",
+  scores: [
+    { label: "Performance", value: 98 },
+    { label: "Accessibility", value: 100 },
+    { label: "Best practices", value: 96 },
+    { label: "SEO", value: 100 },
+  ],
+};
 
 /** Things a buyer can open and judge, with no invented client attached. */
 export const inspectableWork = [

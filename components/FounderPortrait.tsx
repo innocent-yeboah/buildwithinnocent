@@ -28,7 +28,7 @@ export default function FounderPortrait({ tone = "light" }: FounderPortraitProps
           priority
         />
       ) : (
-        <div className="flex aspect-[4/5] flex-col items-center justify-center px-8 text-center">
+        <div className="flex flex-col items-center justify-center px-8 py-16 text-center sm:py-20">
           <span
             aria-hidden="true"
             className={`font-display text-7xl font-semibold ${dark ? "text-gold" : "text-primary"}`}

@@ -33,6 +33,50 @@ const weeks = [
   },
 ];
 
+function CallFacts() {
+  return (
+    <>
+      <dl className="grid grid-cols-3 gap-3 text-sm">
+        <div className="rounded-2xl bg-primary-50 p-3 sm:p-4">
+          <dt className="text-[11px] uppercase tracking-wider text-ink/50">Partnership</dt>
+          <dd className="mt-1 font-display text-base text-primary sm:text-lg">{site.offer.total}</dd>
+        </div>
+        <div className="rounded-2xl bg-primary-50 p-3 sm:p-4">
+          <dt className="text-[11px] uppercase tracking-wider text-ink/50">Or monthly</dt>
+          <dd className="mt-1 font-display text-base leading-tight text-primary sm:text-lg">
+            GHS 1,000
+            <span className="mt-0.5 block font-sans text-[11px] font-medium text-ink/60">for 6 months</span>
+          </dd>
+        </div>
+        <div className="rounded-2xl bg-primary-50 p-3 sm:p-4">
+          <dt className="text-[11px] uppercase tracking-wider text-ink/50">Reply</dt>
+          <dd className="mt-1 font-display text-base leading-tight text-primary sm:text-lg">1-2 days</dd>
+        </div>
+      </dl>
+      <p className="mt-4 text-sm leading-relaxed text-ink/70">
+        {site.offer.split}. Larger work is quoted separately, in writing.
+      </p>
+      {site.whatsappUrl && (
+        <a
+          href={site.whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-secondary mt-6"
+        >
+          Or WhatsApp Innocent
+        </a>
+      )}
+      <p className="mt-4 text-sm text-ink/70">
+        A lighter path, if you would rather not book a call yet:{" "}
+        <Link href="/start" className="font-semibold text-primary underline-offset-4 hover:underline">
+          send a short note
+        </Link>
+        . Same reply window — {responseTimePhrase}.
+      </p>
+    </>
+  );
+}
+
 const deliverables = [
   "A website with one job: turn a visitor into an enquiry or a booking.",
   "Booking that does not wait for someone to be free.",
@@ -46,54 +90,24 @@ export default function StrategyCallPage() {
   return (
     <>
       <section className="border-b border-primary-100 bg-white">
-        <div className="container-site grid gap-10 py-12 lg:grid-cols-2 lg:items-start lg:py-16">
+        <div className="container-site grid gap-8 py-10 lg:grid-cols-2 lg:items-start lg:gap-10 lg:py-16">
           <div>
             <p className="section-eyebrow">Strategy call</p>
             <h1 className="font-display text-4xl font-semibold leading-[1.08] text-primary sm:text-5xl">
               Book a strategy call with Innocent.
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink/80">
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-ink/80 sm:text-lg">
               One conversation about the business you already run. You leave
-              with a recommendation: build, wait, or do something smaller —
-              and, if you build, a price agreed before the work.
+              with a recommendation, and a price agreed before any build.
             </p>
-            <dl className="mt-8 grid grid-cols-3 gap-3 text-sm">
-              <div className="rounded-2xl bg-primary-50 p-4">
-                <dt className="text-xs uppercase tracking-wider text-ink/50">From</dt>
-                <dd className="mt-1 font-display text-lg text-primary">{site.offer.total}</dd>
-              </div>
-              <div className="rounded-2xl bg-primary-50 p-4">
-                <dt className="text-xs uppercase tracking-wider text-ink/50">Or</dt>
-                <dd className="mt-1 font-display text-lg text-primary">GHS 1,000</dd>
-              </div>
-              <div className="rounded-2xl bg-primary-50 p-4">
-                <dt className="text-xs uppercase tracking-wider text-ink/50">Reply</dt>
-                <dd className="mt-1 font-display text-lg leading-tight text-primary">1–2 days</dd>
-              </div>
-            </dl>
-            <p className="mt-4 text-sm leading-relaxed text-ink/70">
-              {site.offer.split}. The monthly alternative is {site.offer.monthly}.
-              Larger work is quoted separately, in writing.
-            </p>
-            {site.whatsappUrl && (
-              <a
-                href={site.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary mt-6"
-              >
-                Or WhatsApp Innocent
-              </a>
-            )}
-            <p className="mt-4 text-sm text-ink/70">
-              A lighter path, if you would rather not book a call yet:{" "}
-              <Link href="/start" className="font-semibold text-primary underline-offset-4 hover:underline">
-                send a short note
-              </Link>
-              . Same reply window — {responseTimePhrase}.
-            </p>
+            <div className="mt-6 hidden lg:block">
+              <CallFacts />
+            </div>
           </div>
           <StrategyCallForm />
+          <div className="lg:hidden">
+            <CallFacts />
+          </div>
         </div>
       </section>
 
