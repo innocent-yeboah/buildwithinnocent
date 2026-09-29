@@ -3,11 +3,13 @@
  * Single source of truth for brand copy, contact details, and offer terms
  * used across pages, metadata, and structured data.
  *
- * The public WhatsApp number is NOT hardcoded. Set NEXT_PUBLIC_WHATSAPP_NUMBER
- * (digits only, no +). When it is missing or still the old example value, every
- * WhatsApp link is omitted and structured data does not include a telephone.
+ * Click-to-chat uses the owner's number unless NEXT_PUBLIC_WHATSAPP_NUMBER
+ * is set to a different real number (digits only, no +).
  */
 import { isValidEmail } from "@/lib/email";
+
+/** Owner's public WhatsApp, digits only. */
+export const DEFAULT_WHATSAPP_DIGITS = "233530710628";
 
 const PLACEHOLDER_WHATSAPP_DIGITS = "233201234567";
 
@@ -19,38 +21,39 @@ function warnOnce(key: string, message: string): void {
   console.warn(message);
 }
 
-function readWhatsAppDigits(): string | null {
+/**
+ * Digits used for wa.me links. An empty value, the old example number, or an
+ * unusable override falls back to the owner's number. Any other real number
+ * in NEXT_PUBLIC_WHATSAPP_NUMBER replaces it.
+ */
+export function resolveWhatsAppDigits(raw: string | undefined | null): string {
+  const digits = (raw ?? "").replace(/\D/g, "");
+  if (!digits || digits === PLACEHOLDER_WHATSAPP_DIGITS) return DEFAULT_WHATSAPP_DIGITS;
+  if (digits.length < 8 || digits.length > 15) return DEFAULT_WHATSAPP_DIGITS;
+  return digits;
+}
+
+function readWhatsAppDigits(): string {
   const raw = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() ?? "";
   const digits = raw.replace(/\D/g, "");
-
-  if (!digits) {
-    warnOnce(
-      "whatsapp-missing",
-      "NEXT_PUBLIC_WHATSAPP_NUMBER is not set. WhatsApp links are hidden and no telephone is included in structured data. Set it in Vercel to turn click-to-chat on.",
-    );
-    return null;
-  }
 
   if (digits === PLACEHOLDER_WHATSAPP_DIGITS) {
     warnOnce(
       "whatsapp-placeholder",
-      "NEXT_PUBLIC_WHATSAPP_NUMBER is the example placeholder (233201234567). Treating it as unset so a fake number is not published.",
+      "NEXT_PUBLIC_WHATSAPP_NUMBER is the example placeholder (233201234567). Using the built-in WhatsApp number instead.",
     );
-    return null;
-  }
-
-  if (digits.length < 8 || digits.length > 15) {
+  } else if (digits && (digits.length < 8 || digits.length > 15)) {
     warnOnce(
       "whatsapp-invalid",
-      "NEXT_PUBLIC_WHATSAPP_NUMBER is not a usable phone number. Treating it as unset.",
+      "NEXT_PUBLIC_WHATSAPP_NUMBER is not a usable phone number. Using the built-in WhatsApp number instead.",
     );
-    return null;
   }
 
-  return digits;
+  return resolveWhatsAppDigits(raw);
 }
 
-function formatWhatsAppDisplay(digits: string): string {
+/** Visible form of a Ghana mobile: +233 53 071 0628. */
+export function formatWhatsAppDisplay(digits: string): string {
   if (digits.startsWith("233") && digits.length === 12) {
     return `+233 ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
   }
@@ -101,11 +104,12 @@ export const site = {
     "10+ qualified leads in 30 days, or we work for free until you get them.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://buildwithinnocent.com",
   email: readContactEmail(),
-  /** E.164 with a leading +, or null when WhatsApp is not configured. */
-  phone: whatsappDigits ? `+${whatsappDigits}` : null,
-  phoneDisplay: whatsappDigits ? formatWhatsAppDisplay(whatsappDigits) : null,
-  /** Click-to-chat URL with a prefilled message, or null when unset. */
-  whatsappUrl: whatsappDigits ? whatsappChatUrl(whatsappDigits) : null,
+  /** E.164 with a leading +. */
+  phone: `+${whatsappDigits}`,
+  /** Spaced form shown as text, e.g. +233 53 071 0628. */
+  phoneDisplay: formatWhatsAppDisplay(whatsappDigits),
+  /** Click-to-chat URL with a prefilled message. */
+  whatsappUrl: whatsappChatUrl(whatsappDigits),
   /**
    * Public name only. Earlier pages used "Innocent Golden"; the owner of
    * this project is Innocent Yeboah. The surname is his decision to confirm.
