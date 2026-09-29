@@ -33,9 +33,7 @@ export default function ScorecardPage() {
         </div>
       </section>
       <section className="bg-primary-50 py-12 sm:py-16">
-        <div className="container-site max-w-3xl">
-          <ScorecardForm />
-        </div>
+        <ScorecardForm />
       </section>
     </>
   );

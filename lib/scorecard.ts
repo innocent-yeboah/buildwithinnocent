@@ -255,10 +255,11 @@ export function resultPlainText(
   fullName: string,
   result: ScorecardResult,
   bookingUrl: string,
+  recommendation?: { name: string; sentence: string },
 ): string {
   const first = fullName.split(" ")[0] || fullName;
   const steps = result.nextSteps.map((step, index) => `${index + 1}. ${step}`).join("\n");
-  return [
+  const lines = [
     `Hello ${first},`,
     "",
     `Your AI Readiness Score is ${result.total} out of 20.`,
@@ -272,9 +273,10 @@ export function resultPlainText(
     "",
     "Next steps:",
     steps,
-    "",
-    `Book a strategy call: ${bookingUrl}`,
-    "",
-    "Powered by Offer Value With Innocent",
-  ].join("\n");
+  ];
+  if (recommendation) {
+    lines.push("", `Recommended: ${recommendation.name}`, recommendation.sentence);
+  }
+  lines.push("", `Book a strategy call: ${bookingUrl}`, "", "Powered by Offer Value With Innocent");
+  return lines.join("\n");
 }

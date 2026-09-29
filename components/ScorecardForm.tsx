@@ -15,13 +15,21 @@ import {
   type ScorecardFieldErrors,
   type ScorecardResult,
 } from "@/lib/scorecard";
-import { site } from "@/lib/site";
+import { resolveWhatsAppDigits, site, whatsappChatUrl } from "@/lib/site";
 import { FormLegalNote, HoneypotField, TurnstileWidget } from "@/components/FormGuards";
+import OfferLadder from "@/components/OfferLadder";
+import {
+  offerIdForName,
+  recommendOffer,
+  scorecardInterestMessage,
+  type OfferRecommendation,
+} from "@/lib/offers";
 
 type ViewResult = {
   result: ScorecardResult;
   saved: boolean;
   note: string;
+  recommendation: OfferRecommendation;
 };
 
 const inputClasses =
@@ -126,6 +134,8 @@ export default function ScorecardForm() {
           tier: string;
           startHere: string;
           nextSteps: [string, string, string];
+          recommendedTier?: string;
+          recommendation?: string;
         };
       } | null;
 
@@ -142,19 +152,28 @@ export default function ScorecardForm() {
       }
 
       if (data?.result) {
+        const result = {
+          ...local,
+          salesScore: data.result.salesScore,
+          aiScore: data.result.aiScore,
+          revenueScore: data.result.revenueScore,
+          total: data.result.total,
+          tier: data.result.tier,
+          startHere: data.result.startHere,
+          nextSteps: data.result.nextSteps,
+        };
+        const localRecommendation = recommendOffer(result);
         setView({
-          result: {
-            ...local,
-            salesScore: data.result.salesScore,
-            aiScore: data.result.aiScore,
-            revenueScore: data.result.revenueScore,
-            total: data.result.total,
-            tier: data.result.tier,
-            startHere: data.result.startHere,
-            nextSteps: data.result.nextSteps,
-          },
+          result,
           saved: Boolean(data.saved),
           note: data.message || "",
+          recommendation: data.result.recommendedTier
+            ? {
+                id: offerIdForName(data.result.recommendedTier) ?? localRecommendation.id,
+                name: data.result.recommendedTier,
+                sentence: data.result.recommendation || localRecommendation.sentence,
+              }
+            : localRecommendation,
         });
         setSubmitting(false);
         return;
@@ -164,6 +183,7 @@ export default function ScorecardForm() {
         result: local,
         saved: false,
         note: data?.message || "Your result is ready on this page. A copy was not saved.",
+        recommendation: recommendOffer(local),
       });
     } catch (error) {
       console.error("Scorecard request failed:", error);
@@ -171,19 +191,26 @@ export default function ScorecardForm() {
         result: local,
         saved: false,
         note: "Your result is ready on this page. A copy was not saved.",
+        recommendation: recommendOffer(local),
       });
     }
     setSubmitting(false);
   }
 
   if (view) {
-    const { result, saved, note } = view;
+    const { result, saved, note, recommendation } = view;
     const sections = [
       { label: "Sales process", score: result.salesScore, max: 6 },
       { label: "AI adoption", score: result.aiScore, max: 6 },
       { label: "Revenue goals", score: result.revenueScore, max: 8 },
     ];
+    const whatsappUrl = whatsappChatUrl(
+      resolveWhatsAppDigits(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER),
+      scorecardInterestMessage(result.total, recommendation.name),
+    );
     return (
+      <div className="space-y-12">
+      <div className="container-site max-w-3xl">
       <div className="rounded-3xl border border-primary-100 bg-white p-6 shadow-sm sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-growth">Your result</p>
         <h2
@@ -232,17 +259,20 @@ export default function ScorecardForm() {
           ))}
         </ol>
 
+      </div>
+      </div>
+      <div className="container-site">
+        <OfferLadder
+          heading="Recommended for your score"
+          recommendedId={recommendation.id}
+          sentence={recommendation.sentence}
+        />
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link href="/strategy-call" className="btn-primary">
             Book a strategy call <span aria-hidden="true">&rarr;</span>
           </Link>
           {site.whatsappUrl ? (
-            <a
-              href={site.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary"
-            >
+            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
               WhatsApp Innocent
             </a>
           ) : null}
@@ -251,10 +281,16 @@ export default function ScorecardForm() {
           Powered by Offer Value With Innocent
         </p>
       </div>
+      </div>
     );
   }
 
   return (
+    <div className="space-y-12">
+      <div className="container-site">
+        <OfferLadder />
+      </div>
+      <div className="container-site max-w-3xl">
     <form
       onSubmit={handleSubmit}
       noValidate
@@ -384,6 +420,8 @@ export default function ScorecardForm() {
         <FormLegalNote />
       </div>
     </form>
+      </div>
+    </div>
   );
 }
 
