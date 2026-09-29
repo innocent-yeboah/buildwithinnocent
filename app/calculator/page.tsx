@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/page-meta";
 import PricingCalculator from "@/components/PricingCalculator";
 import CtaBand from "@/components/CtaBand";
 import { responseTimePhrase } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Pricing Calculator — Estimate Your Digital Business System",
   description:
     "Build your own estimate: pick the modules your business needs and see the price instantly. Transparent pricing, no surprises.",
-  alternates: { canonical: "/calculator" },
-};
+  path: "/calculator",
+});
 
 export default function CalculatorPage() {
   return (

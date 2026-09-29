@@ -44,6 +44,19 @@ export const publishedCaseStudies: CaseStudyRecord[] = [];
 export const publishedTestimonials: TestimonialRecord[] = [];
 
 /**
+ * Unfinished visitor-facing pieces. The content stays in the repo.
+ * Flip a flag when the owner wants it on the site.
+ */
+export const showVisitorPlaceholders = {
+  /** Empty "Clients" block on the homepage. */
+  emptyClientSection: false,
+  /** Hard-coded Lighthouse numbers from a local build. */
+  labScores: false,
+  /** Fake demo hostnames that do not resolve. */
+  demoAddressBar: false,
+} as const;
+
+/**
  * Lab measurements from a local production build. Fill only after a real
  * Lighthouse run in this environment. Do not estimate.
  */

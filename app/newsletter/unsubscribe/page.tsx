@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Newsletter Unsubscribe",
+  description: "You have left the Build With Innocent newsletter.",
+  path: "/newsletter/unsubscribe",
   robots: { index: false, follow: false },
-};
+});
 
 type Props = {
   searchParams: { status?: string };

@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import StrategyCallForm from "@/components/StrategyCallForm";
 import { responseTimePhrase, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Book a Strategy Call",
   description:
     "Book a strategy call with Innocent. Optional budget and timeline. The published partnership is GHS 5,400, with scope, deliverables, and a five-week path explained.",
-  alternates: { canonical: "/strategy-call" },
-};
+  path: "/strategy-call",
+});
 
 const weeks = [
   {

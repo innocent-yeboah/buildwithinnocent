@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
 import {
@@ -11,12 +11,12 @@ import {
   CheckIcon,
 } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Industries — Systems Built for How Your Business Actually Works",
   description:
     "Digital business systems for spas and wellness, food and beverage, creatives, retail and e-commerce, and service providers across Africa.",
-  alternates: { canonical: "/industries" },
-};
+  path: "/industries",
+});
 
 const industries = [
   {

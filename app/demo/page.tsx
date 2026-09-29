@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
 import { DashboardIcon, ClockIcon, CardIcon, ChartIcon } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Live Demo — Try the System Before You Buy It",
   description:
     "Play with a real booking flow your customers would use, and the admin dashboard you would manage it from. No signup required.",
-  alternates: { canonical: "/demo" },
-};
+  path: "/demo",
+});
 
 export default function DemoPage() {
   return (

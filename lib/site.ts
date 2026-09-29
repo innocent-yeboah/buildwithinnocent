@@ -154,15 +154,20 @@ export function publicFallback(): { whatsapp?: string; email?: string } | undefi
 }
 
 export const navLinks = [
-  { href: "/what-we-build", label: "The System" },
-  { href: "/strategy-call", label: "Working Together" },
-  { href: "/case-studies", label: "Proof" },
+  { href: "/what-we-build", label: "What you get" },
+  { href: "/demo", label: "Demo" },
   { href: "/calculator", label: "Pricing" },
   { href: "/about", label: "About" },
 ] as const;
 
-/** Pages that stay easy to find without crowding the header. */
+/**
+ * Pages that stay easy to find without crowding the header.
+ * Proof is the case-studies page, not the demo, so it stays here.
+ * The strategy call is the header button and this footer link.
+ */
 export const moreLinks = [
+  { href: "/case-studies", label: "Proof" },
+  { href: "/strategy-call", label: "Book a call" },
   { href: "/how-it-works", label: "The 5-week process" },
   { href: "/industries", label: "Industries" },
   { href: "/blog", label: "Writing" },
@@ -173,9 +178,7 @@ export const moreLinks = [
 export const toolLinks = [
   { href: "/scorecard", label: "Free AI Readiness Scorecard" },
   { href: "/assessment", label: "Free Assessment" },
-  { href: "/demo", label: "Live Demo" },
   { href: "/experience", label: "3D Experience" },
-  { href: "/calculator", label: "Pricing Calculator" },
   { href: "/resources", label: "Free Resources" },
   { href: "/newsletter", label: "Newsletter" },
   { href: "/referral", label: "Referral Program — Earn GHS 300" },

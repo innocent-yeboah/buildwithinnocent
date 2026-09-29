@@ -1,17 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import Testimonials from "@/components/Testimonials";
 import CtaBand from "@/components/CtaBand";
 import FounderPortrait from "@/components/FounderPortrait";
-import { measuredPerformance, inspectableWork } from "@/lib/proof";
+import { measuredPerformance, inspectableWork, showVisitorPlaceholders } from "@/lib/proof";
 import { responseTimePhrase, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: `${site.name} — ${site.tagline}`,
   description:
     "Innocent builds digital systems for owners of established African businesses. The published partnership is GHS 5,400. Book a strategy call.",
-  alternates: { canonical: "/" },
-};
+  path: "/",
+  absolute: true,
+});
 
 const included = [
   "A website that asks for the booking, not just applause.",
@@ -196,7 +197,7 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-          {measuredPerformance && (
+          {showVisitorPlaceholders.labScores && measuredPerformance && (
             <div className="mt-8 rounded-3xl border border-primary-100 bg-primary-50 p-6">
               <p className="text-sm font-semibold text-primary">
                 Measured with {measuredPerformance.tool} on {measuredPerformance.measuredOn}

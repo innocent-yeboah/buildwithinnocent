@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
 import { responseTimePhrase, site } from "@/lib/site";
@@ -18,12 +18,12 @@ import {
   ChatIcon,
 } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "What We Build — The Complete Digital Business System",
   description:
     "Professional website, admin dashboard, payments, CRM, social integration, automated email, and a full year of hosting and support. One partnership, everything included.",
-  alternates: { canonical: "/what-we-build" },
-};
+  path: "/what-we-build",
+});
 
 const deliverables = [
   {

@@ -87,7 +87,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="relative flex h-dvh flex-col overflow-hidden font-sans text-ink antialiased">
+      <body className="relative min-h-dvh font-sans text-ink antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -98,15 +98,15 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <div data-scroll-root className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className="pb-[4.75rem]">
           <Header />
-          <main id="main-content" className="flex-1">
+          <main id="main-content">
             {children}
           </main>
           <Footer />
         </div>
-        {/* Reserved bar so the two launchers never sit on a CTA or a form field. */}
-        <div className="z-[60] flex shrink-0 items-center justify-between gap-3 border-t border-primary-100 bg-white px-4 py-3">
+        {/* Fixed bar with page padding below the content, so the document itself scrolls. */}
+        <div className="fixed inset-x-0 bottom-0 z-[60] flex items-center justify-between gap-3 border-t border-primary-100 bg-white px-4 py-3">
           <WhatsAppButton />
           <ChatWidget />
         </div>

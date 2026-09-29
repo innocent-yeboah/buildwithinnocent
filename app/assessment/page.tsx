@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import {
   TargetIcon,
@@ -11,12 +11,12 @@ import {
   ChartIcon,
 } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Free Assessment — What Is Your Digital Business Readiness Score?",
   description:
     "Answer 8 quick questions and get your Digital Business Readiness Score — plus a personalized breakdown of where your business is losing customers.",
-  alternates: { canonical: "/assessment" },
-};
+  path: "/assessment",
+});
 
 const layerPreviews = [
   {
@@ -63,6 +63,13 @@ export default function AssessmentPage() {
             8 questions. No jargon. You get a score out of 100, a breakdown
             across the four growth layers, and a clear picture of exactly
             where your business is losing customers today.
+          </p>
+          <p className="mt-4 text-sm text-primary-100">
+            This is separate from the{" "}
+            <Link href="/scorecard" className="font-semibold text-white underline underline-offset-4">
+              AI Readiness Scorecard
+            </Link>
+            , which scores sales, AI adoption, and revenue goals out of 20.
           </p>
           <div
             className="animate-fade-up mt-9"

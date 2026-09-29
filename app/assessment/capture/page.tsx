@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import AssessmentCapture from "@/components/AssessmentCapture";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Almost There — Your Readiness Score Is Ready",
   description: "One last step before we reveal your Digital Business Readiness Score.",
+  path: "/assessment/capture",
   robots: { index: false },
-};
+});
 
 export default function AssessmentCapturePage() {
   return (

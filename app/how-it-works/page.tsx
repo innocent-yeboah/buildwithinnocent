@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
 import {
@@ -11,12 +11,12 @@ import {
   CheckIcon,
 } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "How It Works — From First Call to Customers in 5 Weeks",
   description:
     "Our 5-step process: Discovery, Design & Build, Review & Refine, Launch, and 12 months of Growth support. Your digital business system, live in 5 weeks.",
-  alternates: { canonical: "/how-it-works" },
-};
+  path: "/how-it-works",
+});
 
 const steps = [
   {

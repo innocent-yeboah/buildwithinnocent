@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import { getAllPosts } from "@/lib/blog";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Blog — Practical Growth Ideas for African Businesses",
   description:
     "No jargon, no fluff. Practical articles on lead capture, mobile money, automation, and building a business that grows while you sleep.",
-  alternates: { canonical: "/blog" },
-};
+  path: "/blog",
+});
 
 const dateFormatter = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",

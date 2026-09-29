@@ -284,7 +284,7 @@ export default function StrategyCallForm() {
 
       <TurnstileWidget onToken={setTurnstileToken} />
       <button type="submit" className="btn-primary mt-6 w-full" disabled={state === "submitting"}>
-        {state === "submitting" ? "Sending…" : "Book a strategy call"}
+        {state === "submitting" ? "Sending…" : "Request the call"}
       </button>
       <p className="mt-3 text-center text-xs text-ink/60">
         A reply {responseTimePhrase}. No obligation.

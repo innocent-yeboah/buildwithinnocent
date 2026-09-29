@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckIcon, ShieldCheckIcon } from "@/components/Icons";
+import { COMPLETE_SYSTEM_PRICE, estimateBreakdown, MONTHLY_MONTHS, MONTHLY_PAYMENT } from "@/lib/pricing";
 
 type Module = {
   id: string;
@@ -58,10 +59,6 @@ const modules: Module[] = [
   },
 ];
 
-const COMPLETE_SYSTEM_PRICE = 5400;
-const MONTHLY_PAYMENT = 1000;
-const MONTHLY_MONTHS = 6;
-
 /**
  * Interactive estimate builder. Selecting most modules nudges toward the
  * Complete System, which bundles everything (plus hosting and support)
@@ -95,15 +92,8 @@ export default function PricingCalculator() {
   );
 
   const completeIsBetter = itemizedTotal >= COMPLETE_SYSTEM_PRICE - 1000;
-  const displayTotal = Math.min(itemizedTotal, COMPLETE_SYSTEM_PRICE);
-  const upfront = Math.round(displayTotal / 2);
-  const onDelivery = displayTotal - upfront;
-  // Partnership monthly plan is GHS 1,000 × 6 for the complete system;
-  // partial estimates split evenly across 6 months.
-  const monthly =
-    displayTotal >= COMPLETE_SYSTEM_PRICE
-      ? MONTHLY_PAYMENT
-      : Math.ceil(displayTotal / MONTHLY_MONTHS / 10) * 10;
+  const { displayTotal, upfront, onDelivery, bundleAdjustment } = estimateBreakdown(itemizedTotal);
+  const publishedMonthly = displayTotal >= COMPLETE_SYSTEM_PRICE;
 
   const selectedNames = modules
     .filter((m) => selected.has(m.id))
@@ -155,7 +145,7 @@ export default function PricingCalculator() {
                   <span className="block text-sm text-ink/70">{module.description}</span>
                 </span>
                 <span className="font-display font-bold text-primary">
-                  GHS {module.price}
+                  GHS {module.price.toLocaleString()}
                 </span>
               </button>
             );
@@ -190,7 +180,7 @@ export default function PricingCalculator() {
                 : "border-primary-100 text-primary hover:border-primary"
             }`}
           >
-            GHS {MONTHLY_PAYMENT.toLocaleString()}/month × {MONTHLY_MONTHS}
+            Monthly over {MONTHLY_MONTHS} months
           </button>
         </div>
       </div>
@@ -237,11 +227,18 @@ export default function PricingCalculator() {
                   </li>
                 </ul>
               </>
-            ) : (
+            ) : publishedMonthly ? (
               <p className="font-display text-4xl font-bold">
-                GHS {monthly.toLocaleString()}
+                GHS {MONTHLY_PAYMENT.toLocaleString()}
                 <span className="ml-2 text-base font-medium text-primary-200">
                   /month × {MONTHLY_MONTHS}
+                </span>
+              </p>
+            ) : (
+              <p className="font-display text-4xl font-bold">
+                GHS {displayTotal.toLocaleString()}
+                <span className="ml-2 text-base font-medium text-primary-200">
+                  over {MONTHLY_MONTHS} months
                 </span>
               </p>
             )}
@@ -271,9 +268,17 @@ export default function PricingCalculator() {
                     <CheckIcon className="h-4 w-4 shrink-0 text-growth-300" />
                     {m.name}
                   </span>
-                  <span className="shrink-0 font-semibold">GHS {m.price}</span>
+                  <span className="shrink-0 font-semibold">GHS {m.price.toLocaleString()}</span>
                 </li>
               ))}
+            {bundleAdjustment !== 0 && (
+              <li className="flex items-center justify-between gap-3">
+                <span className="text-primary-100">Partnership price, instead of adding every module</span>
+                <span className="shrink-0 font-semibold">
+                  GHS {bundleAdjustment.toLocaleString()}
+                </span>
+              </li>
+            )}
             <li className="flex items-center justify-between gap-3 border-t border-white/15 pt-3">
               <span className="flex items-center gap-2 text-primary-100">
                 <CheckIcon className="h-4 w-4 shrink-0 text-gold" />
@@ -290,7 +295,9 @@ export default function PricingCalculator() {
           </p>
 
           <Link
-            href={`/start?estimate=${plan === "monthly" ? monthly : displayTotal}&plan=${plan}&modules=${encodeURIComponent(selectedNames)}`}
+            href={`/start?estimate=${
+              plan === "monthly" && publishedMonthly ? MONTHLY_PAYMENT : displayTotal
+            }&plan=${plan}&modules=${encodeURIComponent(selectedNames)}`}
             className="btn-primary mt-6 w-full"
           >
             Get My Exact Proposal <span aria-hidden="true">&rarr;</span>

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckIcon } from "@/components/Icons";
+import { showVisitorPlaceholders } from "@/lib/proof";
 
 type Service = { id: string; name: string; duration: string; price: number };
 
@@ -63,9 +64,13 @@ export default function DemoBooking() {
           <span aria-hidden="true" className="h-3 w-3 rounded-full bg-[#FF6B6B]" />
           <span aria-hidden="true" className="h-3 w-3 rounded-full bg-gold" />
           <span aria-hidden="true" className="h-3 w-3 rounded-full bg-growth" />
-          <p className="ml-3 truncate rounded-md bg-white/10 px-3 py-1 text-xs text-primary-100">
-            serenitydemo.buildwithinnocent.com/book
-          </p>
+          {showVisitorPlaceholders.demoAddressBar ? (
+            <p className="ml-3 truncate rounded-md bg-white/10 px-3 py-1 text-xs text-primary-100">
+              serenitydemo.buildwithinnocent.com/book
+            </p>
+          ) : (
+            <p className="ml-3 text-xs text-primary-100">Sample booking</p>
+          )}
         </div>
 
         <div className="bg-white p-6 sm:p-8">

@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import RevealOnScroll from "@/components/RevealOnScroll";
+import { pageMeta } from "@/lib/page-meta";
 import ReferralSignup from "@/components/ReferralSignup";
 import { ShareIcon, CardIcon, HandshakeIcon } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Referral Program — Earn GHS 300 for Every Business You Refer",
   description:
     "Know a business that needs customers? Share your link. When they become a client, you earn GHS 300 — paid to your mobile money.",
-  alternates: { canonical: "/referral" },
-};
+  path: "/referral",
+});
 
 const steps = [
   {
