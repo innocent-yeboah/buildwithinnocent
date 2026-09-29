@@ -116,11 +116,11 @@ export const site = {
    * The site does not guess.
    */
   founder: "Innocent",
-  /**
-   * Set to "/images/founder.jpg" after a real photograph is placed in
-   * public/images. Left unset so visitors never see a stand-in face.
-   */
-  founderPhoto: null as string | null,
+  /** 4:5 studio portrait. */
+  founderPhoto: "/images/founder-4x5.jpg",
+  /** Square crop of the same portrait, for avatars and structured data. */
+  founderPhotoSquare: "/images/founder-square.jpg",
+  founderPhotoAlt: "Innocent, founder of Build With Innocent",
   locale: "en_GH",
   offer: {
     /** Full partnership investment. */

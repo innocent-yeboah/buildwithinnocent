@@ -57,7 +57,10 @@ export default function AboutPage() {
               Book a strategy call <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
-          <FounderPortrait tone="dark" />
+          <FounderPortrait
+            priority
+            sizes="(min-width: 1024px) 480px, calc(100vw - 2rem)"
+          />
         </div>
       </section>
 
