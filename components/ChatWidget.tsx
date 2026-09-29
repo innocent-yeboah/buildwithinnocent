@@ -108,14 +108,16 @@ export default function ChatWidget() {
                 Instant answers, human backup
               </p>
             </div>
-            <a
-              href={site.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg bg-growth px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-growth-600"
-            >
-              WhatsApp
-            </a>
+            {site.whatsappUrl && (
+              <a
+                href={site.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg bg-growth px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-growth-600"
+              >
+                WhatsApp
+              </a>
+            )}
           </div>
 
           {/* Messages */}
@@ -142,7 +144,7 @@ export default function ChatWidget() {
                       {message.link.label} &rarr;
                     </Link>
                   )}
-                  {message.offerWhatsApp && (
+                  {message.offerWhatsApp && site.whatsappUrl && (
                     <a
                       href={site.whatsappUrl}
                       target="_blank"

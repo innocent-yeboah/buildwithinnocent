@@ -1,13 +1,18 @@
 /**
  * Lead form domain types and validation, shared between the client form
  * and the API route so both sides enforce identical rules.
+ *
+ * Required to follow up: name, WhatsApp/phone, and type of business.
+ * Email, business name, and project details are optional.
  */
+import { isValidEmail } from "@/lib/email";
+
 export const industries = [
-  "Spa & Wellness",
-  "Food & Beverage",
   "Creative & Arts",
+  "Food & Beverage",
   "Retail & E-commerce",
   "Service Provider",
+  "Spa & Wellness",
   "Other",
 ] as const;
 
@@ -24,8 +29,11 @@ export type LeadInput = {
 
 export type LeadFieldErrors = Partial<Record<keyof LeadInput, string>>;
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_PATTERN = /^\+?[\d\s()-]{7,20}$/;
+
+function isIndustry(value: string): value is Industry {
+  return (industries as readonly string[]).includes(value);
+}
 
 /**
  * Validates a lead submission. Returns a map of human-first error
@@ -37,21 +45,23 @@ export function validateLead(input: LeadInput): LeadFieldErrors {
   if (input.fullName.trim().length < 2) {
     errors.fullName = "Please share your name so we know who to greet.";
   }
-  if (input.businessName.trim().length < 2) {
-    errors.businessName = "Please tell us your business name.";
+
+  const business = input.businessName.trim();
+  if (business.length > 0 && business.length < 2) {
+    errors.businessName = "That business name looks too short — or leave it blank.";
   }
-  if (!EMAIL_PATTERN.test(input.email.trim())) {
+
+  const email = input.email.trim();
+  if (email.length > 0 && !isValidEmail(email)) {
     errors.email = "That email does not look right — mind checking it?";
   }
+
   if (!PHONE_PATTERN.test(input.phone.trim())) {
-    errors.phone = "Please add a phone number we can reach you on.";
+    errors.phone = "Please add a WhatsApp number we can reach you on.";
   }
-  if (!input.industry.trim()) {
-    errors.industry = "Please choose the industry closest to your business.";
-  }
-  if (input.projectDetails.trim().length < 20) {
-    errors.projectDetails =
-      "Tell us a little more — even two sentences helps us prepare a better proposal.";
+
+  if (!isIndustry(input.industry.trim())) {
+    errors.industry = "Please choose the type of business closest to yours.";
   }
 
   return errors;

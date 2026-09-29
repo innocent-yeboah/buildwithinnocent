@@ -59,19 +59,28 @@ Site-wide:
    copy .env.example .env.local
    ```
 
-3. Run all three migrations in the Supabase SQL editor, in order:
+3. Run all four migrations in the Supabase SQL editor, in order:
 
    - `supabase/migrations/0001_leads_and_testimonials.sql`
    - `supabase/migrations/0002_growth_features.sql`
    - `supabase/migrations/0003_hardening.sql`
+   - `supabase/migrations/0004_revoke_counter_execute.sql` (revokes public execute on the referral counter functions)
 
-4. In Supabase Auth:
+4. Set the public WhatsApp number so click-to-chat actually appears:
+
+   ```bash
+   NEXT_PUBLIC_WHATSAPP_NUMBER=233XXXXXXXXX
+   ```
+
+   Digits only, no plus. Leave it empty to hide every WhatsApp link. The old example `233201234567` is treated as unset. Owner notifications (WhatsApp Cloud API) are a separate set of variables: `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_NOTIFY_NUMBER`.
+
+5. In Supabase Auth:
 
    - Enable the **Email (magic link)** provider
    - Add `https://your-domain.com/auth/callback` to Redirect URLs
    - For local: `http://localhost:3000/auth/callback`
 
-5. Run the dev server:
+6. Run the dev server:
 
    ```bash
    npm run dev
@@ -91,12 +100,21 @@ For each paying client:
 
 `POST /api/leads` (used by `/start`):
 
-1. Validates and normalizes the submission.
-2. Saves the lead to Supabase **first**.
-3. Atomically credits a referral code when present.
-4. Sends confirmation email (Resend) + WhatsApp to Innocent (best-effort).
+1. Drops honeypot hits, rate-limits per IP (in-memory, best effort on serverless — see `lib/rate-limit.ts`), and checks Turnstile only when both Turnstile env vars are set.
+2. Validates and normalizes the submission. Required: name, WhatsApp number, type of business.
+3. Saves the lead to Supabase **first** when Supabase is configured.
+4. If the save cannot happen, emails and/or WhatsApps the full enquiry to the owner and tells the visitor, with a direct fallback. The pixel conversion does not fire.
+5. When the save works, credits a referral code once per contact, then sends confirmation email (if they left an email) and WhatsApp to the owner.
 
-Assessment completions also notify Innocent on WhatsApp.
+`GET /api/health` reports which integrations are configured (booleans only) and returns 503 when Supabase is missing, so an uptime check can catch a silent outage.
+
+Assessment and newsletter saves follow the same idea: a failed save is not reported as success, and the owner is notified when a channel is configured.
+
+## Tests
+
+```bash
+npm test
+```
 
 ## SEO
 

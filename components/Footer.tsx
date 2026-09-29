@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { navLinks, toolLinks, site } from "@/lib/site";
+import { moreLinks, navLinks, toolLinks, site } from "@/lib/site";
 
 /**
  * Site footer: brand recap, navigation, contact, and the guarantee —
@@ -17,8 +17,8 @@ export default function Footer() {
             {site.tagline}
           </p>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-100">
-            We build digital business systems that bring you customers while
-            you sleep. One partnership. Everything handled.
+            Innocent builds digital systems with owners of established
+            African businesses. One partnership. The price is published.
           </p>
         </div>
 
@@ -37,14 +37,16 @@ export default function Footer() {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/start"
-                className="text-sm font-semibold text-gold hover:text-gold-300"
-              >
-                Start Your System &rarr;
-              </Link>
-            </li>
+            {moreLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="text-sm text-primary-100 transition-colors hover:text-gold"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -79,32 +81,32 @@ export default function Footer() {
             Talk to Us
           </p>
           <ul className="space-y-2.5 text-sm text-primary-100">
-            <li>
-              <a
-                href={`mailto:${site.email}`}
-                className="transition-colors hover:text-gold"
-              >
-                {site.email}
-              </a>
-            </li>
-            <li>
-              <a
-                href={`tel:${site.phone}`}
-                className="transition-colors hover:text-gold"
-              >
-                {site.phoneDisplay}
-              </a>
-            </li>
-            <li>
-              <a
-                href={site.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-gold"
-              >
-                WhatsApp Us
-              </a>
-            </li>
+            {site.email && (
+              <li>
+                <a href={`mailto:${site.email}`} className="transition-colors hover:text-gold">
+                  {site.email}
+                </a>
+              </li>
+            )}
+            {site.phone && site.phoneDisplay && (
+              <li>
+                <a href={`tel:${site.phone}`} className="transition-colors hover:text-gold">
+                  {site.phoneDisplay}
+                </a>
+              </li>
+            )}
+            {site.whatsappUrl && (
+              <li>
+                <a
+                  href={site.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-gold transition-colors hover:text-gold-300"
+                >
+                  WhatsApp Us
+                </a>
+              </li>
+            )}
           </ul>
           <ul className="mt-5 flex gap-4" aria-label="Social media">
             <li>
@@ -138,10 +140,10 @@ export default function Footer() {
             10+ leads in 30 days or we work for free.
           </p>
           <Link
-            href="/start"
+            href="/strategy-call"
             className="mt-4 inline-block text-sm font-semibold text-gold hover:text-gold-300"
           >
-            Tell us about your project &rarr;
+            Book a strategy call &rarr;
           </Link>
         </div>
       </div>
@@ -152,6 +154,14 @@ export default function Footer() {
             &copy; {year} {site.name}. All rights reserved.
           </p>
           <p>Built with the same system we sell. Proudly African.</p>
+          <p className="flex gap-4">
+            <Link href="/privacy" className="hover:text-gold">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-gold">
+              Terms
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

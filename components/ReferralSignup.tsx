@@ -2,6 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import { site } from "@/lib/site";
+import { isValidEmail } from "@/lib/email";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
+import { FormLegalNote, HoneypotField, TurnstileWidget } from "@/components/FormGuards";
 import { CheckIcon } from "@/components/Icons";
 
 const inputClasses =
@@ -14,8 +17,11 @@ export default function ReferralSignup() {
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const [code, setCode] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const shareUrl = code ? `${site.url}/referral/${code}` : "";
   const whatsappShare = code
@@ -28,7 +34,7 @@ export default function ReferralSignup() {
     event.preventDefault();
     setError("");
 
-    if (form.name.trim().length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) {
+    if (form.name.trim().length < 2 || !isValidEmail(form.email)) {
       setError("Please share your name and a valid email so we can track your rewards.");
       return;
     }
@@ -38,9 +44,26 @@ export default function ReferralSignup() {
       const response = await fetch("/api/referrals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          [HONEYPOT_FIELD]: honeypot,
+          turnstileToken,
+        }),
       });
-      const payload = (await response.json()) as { code?: string; message?: string };
+      const payload = (await response.json()) as {
+        code?: string;
+        message?: string;
+        existing?: boolean;
+        ignored?: boolean;
+      };
+      if (payload.ignored) {
+        setNotice(payload.message ?? "Thanks — we received that.");
+        return;
+      }
+      if (payload.existing) {
+        setNotice(payload.message ?? "Check your email for your existing referral link.");
+        return;
+      }
       if (!response.ok || !payload.code) {
         setError(payload.message ?? "Something interrupted us. Let's try that again together?");
         return;
@@ -61,6 +84,15 @@ export default function ReferralSignup() {
     } catch {
       // Clipboard unavailable — the visible URL can be copied manually.
     }
+  }
+
+  if (notice) {
+    return (
+      <div role="status" className="rounded-3xl border border-primary-100 bg-white p-8 text-center shadow-card">
+        <h3 className="font-display text-2xl font-bold text-primary">Check your inbox.</h3>
+        <p className="mt-3 text-sm leading-relaxed text-ink/80">{notice}</p>
+      </div>
+    );
   }
 
   if (code) {
@@ -107,7 +139,8 @@ export default function ReferralSignup() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="rounded-3xl bg-white p-8 shadow-card">
+    <form onSubmit={handleSubmit} noValidate className="relative rounded-3xl bg-white p-8 shadow-card">
+      <HoneypotField value={honeypot} onChange={setHoneypot} />
       <h3 className="font-display text-xl font-bold text-primary">
         Get Your Referral Link
       </h3>
@@ -165,6 +198,9 @@ export default function ReferralSignup() {
         </p>
       )}
 
+      <div className="mt-4">
+        <TurnstileWidget onToken={setTurnstileToken} />
+      </div>
       <button
         type="submit"
         disabled={submitting}
@@ -173,6 +209,9 @@ export default function ReferralSignup() {
         {submitting ? "Creating your link…" : "Create My Link"}
         {!submitting && <span aria-hidden="true">&rarr;</span>}
       </button>
+      <div className="mt-4">
+        <FormLegalNote />
+      </div>
     </form>
   );
 }

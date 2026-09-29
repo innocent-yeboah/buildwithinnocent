@@ -10,6 +10,9 @@ import {
   ASSESSMENT_CONTACT_KEY,
 } from "@/lib/assessment";
 import { trackAssessmentComplete } from "@/lib/pixels";
+import { isValidEmail } from "@/lib/email";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
+import { FormLegalNote, HoneypotField, TurnstileWidget } from "@/components/FormGuards";
 
 type Contact = { fullName: string; businessName: string; email: string };
 
@@ -30,6 +33,8 @@ export default function AssessmentCapture() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [answersReady, setAnswersReady] = useState<boolean | null>(null);
+  const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   // A visitor landing here without answers should start the assessment.
   useEffect(() => {
@@ -56,7 +61,7 @@ export default function AssessmentCapture() {
     if (
       contact.fullName.trim().length < 2 ||
       contact.businessName.trim().length < 2 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact.email.trim())
+      !isValidEmail(contact.email)
     ) {
       setError("Please fill in your name, business, and a valid email so we can address your results properly.");
       return;
@@ -74,7 +79,7 @@ export default function AssessmentCapture() {
 
     // Best effort: the visitor still gets their score if saving fails.
     try {
-      await fetch("/api/assessments", {
+      const response = await fetch("/api/assessments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -85,11 +90,16 @@ export default function AssessmentCapture() {
           band: band.name,
           layerScores: layers,
           answers,
+          [HONEYPOT_FIELD]: honeypot,
+          turnstileToken,
         }),
       });
-      trackAssessmentComplete(total);
+      const payload = (await response.json()) as { saved?: boolean; ignored?: boolean };
+      if (response.ok && payload.saved) {
+        trackAssessmentComplete(total);
+      }
     } catch {
-      // Never block the score reveal on a network error.
+      // Never block the score reveal on a network error. Do not count it as a conversion.
     }
 
     router.push("/assessment/score");
@@ -114,7 +124,8 @@ export default function AssessmentCapture() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className="mt-10 space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="relative mt-10 space-y-5">
+        <HoneypotField value={honeypot} onChange={setHoneypot} />
         <div>
           <label htmlFor="assess-name" className="mb-1.5 block text-sm font-semibold text-primary">
             Full Name
@@ -167,6 +178,8 @@ export default function AssessmentCapture() {
           </p>
         )}
 
+        <TurnstileWidget onToken={setTurnstileToken} />
+
         <button
           type="submit"
           disabled={submitting}
@@ -178,6 +191,7 @@ export default function AssessmentCapture() {
         <p className="text-center text-xs text-ink/60">
           Your details stay with us. No spam — ever.
         </p>
+        <FormLegalNote />
       </form>
     </div>
   );

@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  description:
+    "That page is not on Build With Innocent. Head home or tell us about your project.",
+};
 
 export default function NotFound() {
   return (

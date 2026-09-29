@@ -14,9 +14,25 @@ import {
   ASSESSMENT_CONTACT_KEY,
 } from "@/lib/assessment";
 
+function startHref(result: Result, weakest: LayerKey[]): string {
+  const params = new URLSearchParams();
+  params.set("name", result.fullName);
+  params.set("business", result.businessName);
+  if (result.email) params.set("email", result.email);
+  params.set("score", String(result.total));
+  const weakLabels = weakest.map((key) => layerLabels[key]).join(" and ");
+  params.set(
+    "details",
+    `I completed the free readiness assessment and scored ${result.total}/100. The weakest areas were ${weakLabels}.`,
+  );
+  return `/start?${params.toString()}`;
+}
+
 type Result = {
+  fullName: string;
   firstName: string;
   businessName: string;
+  email: string;
   total: number;
   layers: LayerScores;
 };
@@ -42,11 +58,14 @@ export default function AssessmentScore() {
       const contact = JSON.parse(contactRaw) as {
         fullName: string;
         businessName: string;
+        email?: string;
       };
       const { total, layers } = computeScores(answers);
       setResult({
+        fullName: contact.fullName,
         firstName: contact.fullName.split(" ")[0],
         businessName: contact.businessName,
+        email: contact.email ?? "",
         total,
         layers,
       });
@@ -205,7 +224,7 @@ export default function AssessmentScore() {
           for free.
         </p>
         <div className="mt-7 flex flex-col justify-center gap-4 sm:flex-row">
-          <Link href="/start" className="btn-primary">
+          <Link href={startHref(result, weakest)} className="btn-primary">
             Tell Us About Your Project <span aria-hidden="true">&rarr;</span>
           </Link>
           <Link href="/what-we-build" className="btn-ghost-light">
