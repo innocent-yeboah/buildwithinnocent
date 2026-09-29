@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogoLockup } from "@/components/BrandLogo";
 import { navLinks, site } from "@/lib/site";
 
 /**
@@ -33,17 +34,8 @@ export default function Header() {
       }`}
     >
       <div className="container-site flex items-center justify-between gap-4 py-4">
-        <Link
-          href="/"
-          className="flex flex-col leading-tight"
-          aria-label={`${site.name} — home`}
-        >
-          <span className="font-display text-lg font-bold text-primary sm:text-xl">
-            Build With Innocent
-          </span>
-          <span className="hidden text-[11px] font-medium uppercase tracking-wider text-growth sm:block">
-            Digital Business Systems
-          </span>
+        <Link href="/" className="inline-flex shrink-0 items-center">
+          <LogoLockup priority />
         </Link>
 
         <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">

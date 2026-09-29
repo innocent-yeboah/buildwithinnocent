@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoCircle } from "@/components/BrandLogo";
 import { moreLinks, navLinks, toolLinks, site } from "@/lib/site";
 
 /**
@@ -12,10 +13,7 @@ export default function Footer() {
     <footer className="bg-primary-900 text-white">
       <div className="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-5">
         <div>
-          <p className="font-display text-xl font-bold">{site.name}</p>
-          <p className="mt-1 text-sm font-medium uppercase tracking-wider text-gold">
-            {site.tagline}
-          </p>
+          <LogoCircle className="h-20 w-20" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-primary-100">
             Innocent builds digital systems with owners of established
             African businesses. One partnership. The price is published.

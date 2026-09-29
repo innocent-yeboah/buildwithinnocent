@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Testimonials from "@/components/Testimonials";
 import CtaBand from "@/components/CtaBand";
+import { LogoCircle } from "@/components/BrandLogo";
 import FounderPortrait from "@/components/FounderPortrait";
 import { measuredPerformance, inspectableWork } from "@/lib/proof";
 import { responseTimePhrase, site } from "@/lib/site";
@@ -26,6 +27,7 @@ export default function HomePage() {
       <section aria-labelledby="hero-title" className="bg-primary text-white">
         <div className="container-site grid items-end gap-10 py-14 lg:grid-cols-[1.15fr_0.85fr] lg:py-20">
           <div>
+            <LogoCircle className="mb-6 h-14 w-14" alt="" />
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
               For owners of established businesses
             </p>
