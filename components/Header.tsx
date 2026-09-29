@@ -15,10 +15,15 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const scroller = document.querySelector("[data-scroll-root]");
+    const onScroll = () => {
+      const top = scroller instanceof HTMLElement ? scroller.scrollTop : window.scrollY;
+      setScrolled(top > 8);
+    };
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const target = scroller ?? window;
+    target.addEventListener("scroll", onScroll, { passive: true });
+    return () => target.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
