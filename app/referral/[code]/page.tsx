@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import ReferralTracker from "@/components/ReferralTracker";
 import RevealOnScroll from "@/components/RevealOnScroll";
@@ -16,13 +17,13 @@ export const dynamic = "force-dynamic";
 type PageProps = { params: { code: string } };
 
 export function generateMetadata({ params }: PageProps): Metadata {
-  return {
+  return pageMeta({
     title: "You Were Recommended — Digital Business Systems",
     description:
       "Someone who knows your business thought of us. See what a complete digital business system could do for you — 10+ leads in 30 days or we work for free.",
+    path: `/referral/${params.code}`,
     robots: { index: false },
-    alternates: { canonical: `/referral/${params.code}` },
-  };
+  });
 }
 
 /** Fetches the referrer's first name and counts the click, best effort. */

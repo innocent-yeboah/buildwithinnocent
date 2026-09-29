@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import ClientDashboard from "@/components/ClientDashboard";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Client Portal — Your Project Dashboard",
   description: "Track your project's progress, milestones, and support.",
+  path: "/client/dashboard",
   robots: { index: false },
-};
+});
 
 export default function ClientDashboardPage() {
   return (

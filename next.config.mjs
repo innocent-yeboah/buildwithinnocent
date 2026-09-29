@@ -10,6 +10,15 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  async redirects() {
+    return [
+      { source: "/pricing", destination: "/calculator", permanent: true },
+      { source: "/contact", destination: "/strategy-call", permanent: true },
+      { source: "/services", destination: "/what-we-build", permanent: true },
+      { source: "/book", destination: "/strategy-call", permanent: true },
+      { source: "/work", destination: "/case-studies", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import DemoBooking from "@/components/DemoBooking";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Demo — The Booking Flow Your Customers Would Use",
   description:
     "Try a live simulation of the booking and payment experience we build: choose a service, pick a time, pay with mobile money.",
-  alternates: { canonical: "/demo/booking" },
-};
+  path: "/demo/booking",
+});
 
 export default function DemoBookingPage() {
   return (

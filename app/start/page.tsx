@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import LeadForm from "@/components/LeadForm";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import { responseTimePhrase, site } from "@/lib/site";
@@ -12,12 +12,11 @@ import {
   CheckIcon,
 } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Start Your System — Tell Us About Your Project",
-  description:
-    `Tell us about your project and receive a tailored proposal ${responseTimePhrase}. 10+ leads in 30 days or we work for free.`,
-  alternates: { canonical: "/start" },
-};
+  description: `Tell us about your project and receive a tailored proposal ${responseTimePhrase}. 10+ leads in 30 days or we work for free.`,
+  path: "/start",
+});
 
 const trustSignals = [
   {

@@ -15,15 +15,10 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const scroller = document.querySelector("[data-scroll-root]");
-    const onScroll = () => {
-      const top = scroller instanceof HTMLElement ? scroller.scrollTop : window.scrollY;
-      setScrolled(top > 8);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
-    const target = scroller ?? window;
-    target.addEventListener("scroll", onScroll, { passive: true });
-    return () => target.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -66,13 +61,14 @@ export default function Header() {
               href={site.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-2 rounded-lg px-3.5 py-2 text-sm font-semibold text-growth-700 hover:bg-growth-50"
+              aria-label="WhatsApp"
+              className="ml-1 inline-flex h-10 w-10 items-center justify-center rounded-lg text-growth-700 hover:bg-growth-50"
             >
-              WhatsApp
+              <WhatsAppIcon />
             </a>
           )}
-          <Link href="/strategy-call" className="btn-primary ml-3 !px-5 !py-2.5 !text-sm">
-            Book a strategy call
+          <Link href="/strategy-call" className="btn-primary ml-2 !px-5 !py-2.5 !text-sm">
+            Book a call
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </nav>
@@ -132,20 +128,29 @@ export default function Header() {
                   href={site.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-lg bg-growth px-4 py-3 text-center text-base font-semibold text-white"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-growth px-4 py-3 text-base font-semibold text-white"
                 >
-                  WhatsApp Us
+                  <WhatsAppIcon />
+                  WhatsApp
                 </a>
               </li>
             )}
             <li className="mt-3">
               <Link href="/strategy-call" className="btn-primary w-full">
-                Book a strategy call <span aria-hidden="true">&rarr;</span>
+                Book a call <span aria-hidden="true">&rarr;</span>
               </Link>
             </li>
           </ul>
         </nav>
       )}
     </header>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+      <path d="M20.5 3.5A11 11 0 0 0 2.1 16.8L1 23l6.4-1.1A11 11 0 0 0 20.5 3.5zM12 20.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3.8.6.6-3.7-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.1-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.5-.6.2-.4c0-.1 0-.3-.1-.4l-.8-1.8c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.2 1.6 2.5 3.9 3.4 1.4.6 2 .6 2.6.5.4-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.1-.2-.1-.4-.2z" />
+    </svg>
   );
 }

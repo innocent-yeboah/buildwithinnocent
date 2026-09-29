@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import NewsletterForm from "@/components/NewsletterForm";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import { MailIcon, ChartIcon, MagnetIcon } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Newsletter — One Useful Growth Idea, Every Two Weeks",
   description:
     "Practical ideas for growing your business online: lead capture, mobile money, automation, and lessons from real client systems. Free, every two weeks.",
-  alternates: { canonical: "/newsletter" },
-};
+  path: "/newsletter",
+});
 
 const expectations = [
   {

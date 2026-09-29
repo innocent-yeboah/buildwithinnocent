@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckIcon } from "@/components/Icons";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "You're In — Welcome to the Newsletter",
   description: "Welcome aboard. Your first issue is on its way.",
+  path: "/newsletter/thank-you",
   robots: { index: false },
-};
+});
 
 export default function NewsletterThankYouPage() {
   return (

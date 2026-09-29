@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { withBackoff } from "@/lib/retry";
-import { publishedTestimonials, type TestimonialRecord } from "@/lib/proof";
+import { publishedTestimonials, showVisitorPlaceholders, type TestimonialRecord } from "@/lib/proof";
 import { TestimonialList } from "@/components/ClientStories";
 
 type Row = {
@@ -55,6 +55,9 @@ async function loadTestimonials(): Promise<TestimonialRecord[]> {
 
 export default async function Testimonials() {
   const testimonials = await loadTestimonials();
+  if (testimonials.length === 0 && !showVisitorPlaceholders.emptyClientSection) {
+    return null;
+  }
 
   return (
     <section aria-labelledby="testimonials-title" className="bg-white py-20 sm:py-24">

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPost } from "@/lib/blog";
+import { pageMeta } from "@/lib/page-meta";
 import { site } from "@/lib/site";
 import CtaBand from "@/components/CtaBand";
 
@@ -14,15 +15,24 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: PageProps): Metadata {
   const post = getPost(params.slug);
-  if (!post) return { title: "Article Not Found" };
-  return {
+  if (!post) {
+    return pageMeta({
+      title: "Article Not Found",
+      description: "That article is not on Build With Innocent.",
+      path: "/blog",
+      robots: { index: false },
+    });
+  }
+  const meta = pageMeta({
     title: post.title,
     description: post.description,
-    alternates: { canonical: `/blog/${post.slug}` },
+    path: `/blog/${post.slug}`,
+  });
+  return {
+    ...meta,
     openGraph: {
+      ...meta.openGraph,
       type: "article",
-      title: post.title,
-      description: post.description,
       publishedTime: post.publishedAt,
     },
   };

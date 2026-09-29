@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { pageMeta } from "@/lib/page-meta";
 import Link from "next/link";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "3D Experience — Digital Systems in Motion",
   description:
     "Explore an interactive Three.js scene: rotate and zoom a living model of connected digital business systems.",
-  alternates: { canonical: "/experience" },
-};
+  path: "/experience",
+});
 
 /** Client-only Three.js canvas (WebGL + OrbitControls). */
 const ThreeCanvas = dynamic(() => import("@/components/ThreeCanvas"), {

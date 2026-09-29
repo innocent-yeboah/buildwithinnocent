@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import DemoDashboard from "@/components/DemoDashboard";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Demo — The Admin Dashboard You Would Run Your Business From",
   description:
     "Explore a live simulation of the owner's dashboard: bookings, revenue, leads, and the automations working in the background.",
-  alternates: { canonical: "/demo/dashboard" },
-};
+  path: "/demo/dashboard",
+});
 
 export default function DemoDashboardPage() {
   return (

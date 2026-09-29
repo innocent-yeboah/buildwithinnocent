@@ -3,8 +3,6 @@ import { site } from "@/lib/site";
 import { getAllPosts } from "@/lib/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
-
   const routes: { path: string; priority: number }[] = [
     { path: "", priority: 1 },
     { path: "/what-we-build", priority: 0.9 },
@@ -29,9 +27,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/terms", priority: 0.3 },
   ];
 
+  // Static pages have no per-page publish date. Omitting lastmod avoids
+  // stamping every URL with the build time.
   const pages: MetadataRoute.Sitemap = routes.map(({ path, priority }) => ({
     url: `${site.url}${path}`,
-    lastModified,
     changeFrequency: "monthly",
     priority,
   }));

@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
+import { pageMeta } from "@/lib/page-meta";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import { CaseStudyList } from "@/components/ClientStories";
-import { inspectableWork, measuredPerformance, publishedCaseStudies } from "@/lib/proof";
+import { inspectableWork, measuredPerformance, publishedCaseStudies, showVisitorPlaceholders } from "@/lib/proof";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Proof",
   description:
     "Client case studies are published only with a confirmed name and numbers. Until then, the live booking sandbox and this website are the work you can inspect.",
-  alternates: { canonical: "/case-studies" },
-};
+  path: "/case-studies",
+});
 
 export default function CaseStudiesPage() {
   return (
@@ -57,7 +57,7 @@ export default function CaseStudiesPage() {
               </li>
             ))}
           </ul>
-          {measuredPerformance && (
+          {showVisitorPlaceholders.labScores && measuredPerformance && (
             <div className="mt-8 rounded-3xl bg-white p-6">
               <p className="text-sm font-semibold text-primary">
                 {measuredPerformance.tool}, {measuredPerformance.measuredOn}

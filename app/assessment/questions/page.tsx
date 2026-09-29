@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import AssessmentQuestions from "@/components/AssessmentQuestions";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Assessment Questions — Your Digital Business Readiness Score",
   description:
     "Answer 8 quick questions about how your business attracts, captures, and follows up with customers.",
+  path: "/assessment/questions",
   robots: { index: false },
-};
+});
 
 export default function AssessmentQuestionsPage() {
   return (

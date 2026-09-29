@@ -100,7 +100,7 @@ For each paying client:
 4. If the save cannot happen, emails and/or WhatsApps the full enquiry to the owner and tells the visitor, with a direct fallback. The pixel conversion does not fire.
 5. When the save works, credits a referral code once per contact, then sends confirmation email (if they left an email) and WhatsApp to the owner.
 
-`GET /api/health` reports which integrations are configured (booleans only) and returns 503 when Supabase is missing, so an uptime check can catch a silent outage.
+`GET /api/health` returns `{ status: "ok" }` or `{ status: "degraded" }` and uses 503 when Supabase is missing, so an uptime check can catch a silent outage. Integration booleans are included only when the request sends `x-health-token` matching `HEALTH_DETAIL_TOKEN`.
 
 Assessment and newsletter saves follow the same idea: a failed save is not reported as success, and the owner is notified when a channel is configured.
 

@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import ClientLogin from "@/components/ClientLogin";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Client Portal — Sign In",
   description:
     "Sign in to your Build With Innocent client portal to track your project, milestones, and support.",
+  path: "/client/login",
   robots: { index: false },
-};
+});
 
 export default function ClientLoginPage() {
   return (

@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import CtaBand from "@/components/CtaBand";
 import FounderPortrait from "@/components/FounderPortrait";
 import { responseTimePhrase, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "About Innocent",
   description:
     "Innocent builds digital systems with owners of established African businesses. How he works, what the partnership includes, and how to book a strategy call.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 const approach = [
   {

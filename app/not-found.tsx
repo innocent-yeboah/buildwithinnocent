@@ -1,11 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Page not found",
   description:
     "That page is not on Build With Innocent. Head home or tell us about your project.",
-};
+  path: "/",
+  robots: { index: false, follow: true },
+});
 
 export default function NotFound() {
   return (

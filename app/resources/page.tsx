@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMeta } from "@/lib/page-meta";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CtaBand from "@/components/CtaBand";
 import { CheckIcon, ChartIcon, MagnetIcon, ChatIcon } from "@/components/Icons";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Free Resources — Checklists and Tools for Growing Your Business",
   description:
     "Free, practical checklists: audit your online presence, plug your lead leaks, and prepare your business for a digital system. No email required.",
-  alternates: { canonical: "/resources" },
-};
+  path: "/resources",
+});
 
 type Resource = {
   id: string;

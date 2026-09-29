@@ -9,6 +9,7 @@ import {
   CheckIcon,
   ClockIcon,
 } from "@/components/Icons";
+import { showVisitorPlaceholders } from "@/lib/proof";
 
 type Tab = "overview" | "bookings" | "leads" | "automations";
 
@@ -76,9 +77,13 @@ export default function DemoDashboard() {
         <span aria-hidden="true" className="h-3 w-3 rounded-full bg-[#FF6B6B]" />
         <span aria-hidden="true" className="h-3 w-3 rounded-full bg-gold" />
         <span aria-hidden="true" className="h-3 w-3 rounded-full bg-growth" />
-        <p className="ml-3 truncate rounded-md bg-white/10 px-3 py-1 text-xs text-primary-100">
-          serenitydemo.buildwithinnocent.com/admin
-        </p>
+        {showVisitorPlaceholders.demoAddressBar ? (
+          <p className="ml-3 truncate rounded-md bg-white/10 px-3 py-1 text-xs text-primary-100">
+            serenitydemo.buildwithinnocent.com/admin
+          </p>
+        ) : (
+          <p className="ml-3 text-xs text-primary-100">Sample dashboard</p>
+        )}
       </div>
 
       <div className="bg-primary-50/60">

@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { pageMeta } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
   title: "Analytics — Admin",
+  description: "Private lead counts for Build With Innocent. Not a public page.",
+  path: "/admin/analytics",
   robots: { index: false, follow: false },
-};
+});
 
 export const dynamic = "force-dynamic";
 
