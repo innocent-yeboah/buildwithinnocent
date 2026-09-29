@@ -69,7 +69,11 @@ const organizationJsonLd: Record<string, unknown> = {
   name: site.name,
   url: site.url,
   slogan: site.tagline,
-  founder: { "@type": "Person", name: site.founder },
+  founder: {
+    "@type": "Person",
+    name: site.founder,
+    image: new URL(site.founderPhotoSquare, site.url).href,
+  },
   areaServed: "Africa",
   sameAs: [site.social.linkedin, site.social.instagram, site.social.twitter],
 };

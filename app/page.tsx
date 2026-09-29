@@ -202,15 +202,15 @@ export default function HomePage() {
 
       <Testimonials />
 
-      <section aria-labelledby="founder-title" className="bg-primary-50 py-16 sm:py-20">
+      <section aria-labelledby="founder-title" className="bg-primary py-16 text-white sm:py-20">
         <div className="container-site grid items-center gap-10 lg:grid-cols-[280px_1fr]">
           <FounderPortrait />
           <div>
-            <p className="section-eyebrow">The person you hire</p>
-            <h2 id="founder-title" className="section-title">
+            <p className="section-eyebrow !text-gold">The person you hire</p>
+            <h2 id="founder-title" className="section-title !text-white">
               You work with Innocent. Not a desk between you and the build.
             </h2>
-            <p className="mt-5 max-w-2xl leading-relaxed text-ink/80">
+            <p className="mt-5 max-w-2xl leading-relaxed text-primary-100">
               The call, the scope, the build, and the year after launch sit
               with the same person. If that is the arrangement you want, the
               about page is the longer version.

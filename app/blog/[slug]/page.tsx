@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPost } from "@/lib/blog";
@@ -43,7 +44,11 @@ export default function BlogPostPage({ params }: PageProps) {
     headline: post.title,
     description: post.description,
     datePublished: post.publishedAt,
-    author: { "@type": "Person", name: site.founder },
+    author: {
+      "@type": "Person",
+      name: site.founder,
+      image: new URL(site.founderPhotoSquare, site.url).href,
+    },
     publisher: { "@type": "Organization", name: site.name, url: site.url },
     mainEntityOfPage: `${site.url}/blog/${post.slug}`,
   };
@@ -128,12 +133,13 @@ export default function BlogPostPage({ params }: PageProps) {
 
             {/* Author strip */}
             <div className="mt-14 flex items-center gap-4 rounded-2xl bg-primary-50 p-6">
-              <span
-                aria-hidden="true"
-                className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-gold"
-              >
-                IG
-              </span>
+              <Image
+                src={site.founderPhotoSquare}
+                alt={site.founderPhotoAlt}
+                width={1200}
+                height={1200}
+                className="h-14 w-14 shrink-0 rounded-full object-cover"
+              />
               <div>
                 <p className="font-bold text-primary">{site.founder}</p>
                 <p className="text-sm text-ink/70">
