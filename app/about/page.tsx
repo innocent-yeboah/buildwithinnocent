@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import { LogoCircle } from "@/components/BrandLogo";
 import FounderPortrait from "@/components/FounderPortrait";
 import { responseTimePhrase, site } from "@/lib/site";
 
@@ -36,6 +37,7 @@ export default function AboutPage() {
       <section className="bg-primary text-white">
         <div className="container-site grid items-center gap-12 py-16 lg:grid-cols-[1.1fr_0.7fr] lg:py-20">
           <div>
+            <LogoCircle className="mb-6 h-14 w-14" alt="" />
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">About</p>
             <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] sm:text-5xl">
               Innocent builds this with you.
