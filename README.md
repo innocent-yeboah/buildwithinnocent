@@ -66,13 +66,7 @@ Site-wide:
    - `supabase/migrations/0003_hardening.sql`
    - `supabase/migrations/0004_revoke_counter_execute.sql` (revokes public execute on the referral counter functions)
 
-4. Set the public WhatsApp number so click-to-chat actually appears:
-
-   ```bash
-   NEXT_PUBLIC_WHATSAPP_NUMBER=233XXXXXXXXX
-   ```
-
-   Digits only, no plus. Leave it empty to hide every WhatsApp link. The old example `233201234567` is treated as unset. Owner notifications (WhatsApp Cloud API) are a separate set of variables: `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_NOTIFY_NUMBER`.
+4. Click-to-chat already uses the owner's WhatsApp number. Set `NEXT_PUBLIC_WHATSAPP_NUMBER` (digits only, no plus) only to override it. The old example `233201234567` is ignored. Owner notifications (WhatsApp Cloud API) are a separate set of variables: `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_NOTIFY_NUMBER`.
 
 5. In Supabase Auth:
 
