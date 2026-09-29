@@ -11,6 +11,7 @@ import {
   type ScorecardAnswers,
   type ScorecardResult,
 } from "@/lib/scorecard";
+import { recommendOffer, type OfferRecommendation } from "@/lib/offers";
 import { site } from "@/lib/site";
 import type { LeadInput } from "@/lib/leads";
 import {
@@ -38,7 +39,7 @@ function readUtm(value: unknown): Record<string, string> | null {
   return Object.keys(utm).length > 0 ? utm : null;
 }
 
-function resultPayload(result: ScorecardResult) {
+function resultPayload(result: ScorecardResult, recommendation: OfferRecommendation) {
   return {
     salesScore: result.salesScore,
     aiScore: result.aiScore,
@@ -47,6 +48,8 @@ function resultPayload(result: ScorecardResult) {
     tier: result.tier,
     startHere: result.startHere,
     nextSteps: result.nextSteps,
+    recommendedTier: recommendation.name,
+    recommendation: recommendation.sentence,
     sections: [
       { label: "Sales process", score: result.salesScore, max: 6 },
       { label: "AI adoption", score: result.aiScore, max: 6 },
@@ -92,16 +95,17 @@ export async function POST(request: NextRequest) {
   }
 
   const result = scoreAnswers(answers);
+  const recommendation = recommendOffer(result);
   const utm = readUtm(body.utm);
   const referrer = readString(body.referrer).trim().slice(0, 500) || null;
 
-  const saved = await saveScorecard({ contact, answers, result, utm, referrer });
-  await notify({ contact, result, saved });
+  const saved = await saveScorecard({ contact, answers, result, recommendation, utm, referrer });
+  await notify({ contact, result, recommendation, saved });
 
   return NextResponse.json(
     {
       saved,
-      result: resultPayload(result),
+      result: resultPayload(result, recommendation),
       message: saved
         ? "Your result is ready."
         : "Your result is ready on this page. A copy was not saved.",
@@ -114,6 +118,7 @@ async function saveScorecard(input: {
   contact: { fullName: string; email: string; businessName: string; phone: string };
   answers: ScorecardAnswers;
   result: ScorecardResult;
+  recommendation: OfferRecommendation;
   utm: Record<string, string> | null;
   referrer: string | null;
 }): Promise<boolean> {
@@ -146,6 +151,7 @@ async function saveScorecard(input: {
         total_score: input.result.total,
         tier: input.result.tier,
         start_section: input.result.startHere,
+        recommended_tier: input.recommendation.name,
         utm: input.utm,
         referrer: input.referrer,
       });
@@ -166,6 +172,7 @@ async function saveScorecard(input: {
       `AI Readiness Scorecard: ${input.result.total}/20 (${input.result.tier}).`,
       `Sales process ${input.result.salesScore}/6, AI adoption ${input.result.aiScore}/6, Revenue goals ${input.result.revenueScore}/8.`,
       `Start here: ${input.result.startHere}.`,
+      `Recommended: ${input.recommendation.name}.`,
     ].join(" "),
   };
 
@@ -193,6 +200,7 @@ async function saveScorecard(input: {
 async function notify(input: {
   contact: { fullName: string; email: string; businessName: string; phone: string };
   result: ScorecardResult;
+  recommendation: OfferRecommendation;
   saved: boolean;
 }): Promise<void> {
   const lead: LeadInput = {
@@ -202,7 +210,7 @@ async function notify(input: {
     phone: input.contact.phone || "(not given)",
     industry: "Not collected",
     projectDetails: [
-      `AI Readiness Scorecard ${input.result.total}/20 — ${input.result.tier}. Start here: ${input.result.startHere}.`,
+      `AI Readiness Scorecard ${input.result.total}/20 — ${input.result.tier}. Start here: ${input.result.startHere}. Recommended: ${input.recommendation.name}.`,
       input.saved ? "Source: scorecard." : "NOT saved to the database.",
     ].join(" "),
   };
@@ -211,7 +219,12 @@ async function notify(input: {
     sendScorecardResultEmail({
       to: input.contact.email,
       fullName: input.contact.fullName,
-      text: resultPlainText(input.contact.fullName, input.result, `${site.url}/strategy-call`),
+      text: resultPlainText(
+        input.contact.fullName,
+        input.result,
+        `${site.url}/strategy-call`,
+        input.recommendation,
+      ),
     }),
     sendWhatsAppNotification(lead),
   ];
@@ -232,6 +245,8 @@ async function notify(input: {
           `AI adoption: ${input.result.aiScore}/6`,
           `Revenue goals: ${input.result.revenueScore}/8`,
           `Start here: ${input.result.startHere}`,
+          `Recommended: ${input.recommendation.name}`,
+          input.recommendation.sentence,
         ].join("\n"),
       ),
     );

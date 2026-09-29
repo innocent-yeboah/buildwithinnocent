@@ -52,7 +52,7 @@ describe("POST /api/scorecard", () => {
     const payload = (await response.json()) as {
       saved: boolean;
       message: string;
-      result: { total: number; tier: string; startHere: string };
+      result: { total: number; tier: string; startHere: string; recommendedTier: string; recommendation: string };
     };
 
     expect(response.status).toBe(200);
@@ -62,6 +62,8 @@ describe("POST /api/scorecard", () => {
     expect(payload.result.total).toBe(7);
     expect(payload.result.tier).toBe("AI-curious, lots of opportunity");
     expect(payload.result.startHere).toBe("Revenue goals");
+    expect(payload.result.recommendedTier).toBe("AI Roadmap");
+    expect(payload.result.recommendation).toContain("Start with the Roadmap");
     expect(sendOwnerEmail).toHaveBeenCalledOnce();
     expect(sendWhatsAppNotification).toHaveBeenCalledOnce();
   });
@@ -70,16 +72,23 @@ describe("POST /api/scorecard", () => {
     const eight = await POST(
       post({ ...contact, answers: answers([2, 2, 2, 2, 0, 0, 0, 0, 0, 0]) }, "203.0.113.41"),
     );
-    const eightBody = (await eight.json()) as { result: { total: number; tier: string } };
+    const eightBody = (await eight.json()) as {
+      result: { total: number; tier: string; recommendedTier: string };
+    };
     expect(eightBody.result.total).toBe(8);
     expect(eightBody.result.tier).toBe("Building momentum, ready to scale");
+    expect(eightBody.result.recommendedTier).toBe("AI Roadmap");
 
     const fifteen = await POST(
       post({ ...contact, answers: answers([2, 2, 2, 2, 2, 2, 2, 1, 0, 0]) }, "203.0.113.42"),
     );
-    const fifteenBody = (await fifteen.json()) as { result: { total: number; tier: string } };
+    const fifteenBody = (await fifteen.json()) as {
+      result: { total: number; tier: string; recommendedTier: string; recommendation: string };
+    };
     expect(fifteenBody.result.total).toBe(15);
     expect(fifteenBody.result.tier).toBe("AI-forward, time to optimize");
+    expect(fifteenBody.result.recommendedTier).toBe("AI Implementation Sprint");
+    expect(fifteenBody.result.recommendation).toContain("You are ready to build");
   });
 
   it("does not notify anyone when the honeypot is filled", async () => {
